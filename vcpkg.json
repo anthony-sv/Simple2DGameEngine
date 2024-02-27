@@ -1,0 +1,9 @@
+{
+  "name": "simple2dgameengine",
+  "version": "0.0.1",
+  "dependencies": [
+    "imgui",
+    "sfml",
+    "imgui-sfml"
+  ]
+}
