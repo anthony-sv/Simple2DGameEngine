@@ -32,6 +32,11 @@ To clone and run this application you will need Visual Studio 2022 and run from 
 ```bash
 # Clone this repository
 $ git clone --recurse-submodules https://github.com/anthony-sv/Simple2DGameEngine
+$ cd Simple2DGameEngine
+$ cd vcpkg
+$ .\bootstrap-vcpkg.bat
+$ $Env:VCPKG_DEFAULT_TRIPLET = "x64-windows"
+$ .\vcpkg integrate install
 ```
 
 > **Note**
