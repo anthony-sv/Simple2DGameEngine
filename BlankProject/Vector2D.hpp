@@ -20,6 +20,10 @@ namespace SGE2D::Math
 		Vector2D operator -(Vector2D const& other) const;
 		Vector2D operator *(double s) const;
 		Vector2D operator /(double s) const;
+		void operator +=(Vector2D const& other);
+		void operator -=(Vector2D const& other);
+		void operator *=(double const s);
+		void operator /=(double const s);
 		[[nodiscard]] double length() const;
 		[[nodiscard]] double distance(Vector2D const& other) const;
 		[[nodiscard]] Vector2D normalize() const;

@@ -1,12 +1,15 @@
 #include "Vector2D.hpp"
 #include <cmath>
 #include <format>
+#include <limits>
 
 namespace SGE2D::Math
 {
 	Vector2D::Vector2D() : Vector2D{ 0,0 } {}
 
-	Vector2D::Vector2D(double const x, double const y) : m_x{ x }, m_y{ y } {}
+	Vector2D::Vector2D(double const x, double const y)
+		: m_x{ x }, m_y{ y }
+	{}
 
 	double Vector2D::getX() const
 	{
@@ -30,7 +33,9 @@ namespace SGE2D::Math
 
 	bool Vector2D::operator ==(Vector2D const& other) const
 	{
-		return m_x == other.m_x && m_y == other.m_y;
+		constexpr float epsilon = std::numeric_limits<float>::epsilon();
+		return std::abs(m_x - other.m_x) <= epsilon * std::abs(m_x + other.m_x) &&
+			std::abs(m_y - other.m_y) <= epsilon * std::abs(m_y + other.m_y);
 	}
 
 	bool Vector2D::operator !=(Vector2D const& other) const
