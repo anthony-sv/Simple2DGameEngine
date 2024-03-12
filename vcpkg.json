@@ -2,8 +2,24 @@
   "name": "simple2dgameengine",
   "version": "0.0.1",
   "dependencies": [
-    "imgui",
-    "sfml",
-    "imgui-sfml"
+    {
+      "name": "imgui",
+      "platform": "windows & x64 & static",
+      "features": [
+        "docking-experimental"
+      ]
+    },
+    {
+      "name": "sfml",
+      "platform": "windows & x64 & static"
+    },
+    {
+      "name": "imgui-sfml",
+      "platform": "windows & x64 & static"
+    },
+    {
+      "name": "boost-log",
+      "platform": "windows & x64 & static"
+    }
   ]
 }

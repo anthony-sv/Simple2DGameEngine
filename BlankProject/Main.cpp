@@ -4,11 +4,13 @@
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "SFML/Graphics.hpp"
+#include <boost/log/trivial.hpp>
 
 #include "Vector2D.hpp"
 
 int main(int argc, char** argv)
 {
+	BOOST_LOG_TRIVIAL(debug) << "A debug severity message";
 	SGE2D::Math::Vector2D vec1{ 2, 4 };
 	vec1 = vec1 * 2;
 	std::cout << "vec1:" << vec1 << '\n';
