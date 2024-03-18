@@ -5,38 +5,31 @@
 
 namespace SGE2D::Math
 {
-	class Vector2D
+	struct [[nodiscard]] Vector2D final
 	{
-	public:
-		Vector2D();
-		Vector2D(double x, double y);
-		[[nodiscard]] double getX() const;
-		void setX(double const x);
-		[[nodiscard]] double getY() const;
-		void setY(double const y);
+		[[nodiscard]] Vector2D();
+		[[nodiscard]] Vector2D(float x, float y);
+		float x{}, y{};
 		bool operator ==(Vector2D const& other) const;
 		bool operator !=(Vector2D const& other) const;
-		Vector2D operator +(Vector2D const& other) const;
-		Vector2D operator -(Vector2D const& other) const;
-		Vector2D operator *(double s) const;
-		Vector2D operator /(double s) const;
+		[[nodiscard]] Vector2D operator +(Vector2D const& other) const;
+		[[nodiscard]] Vector2D operator -(Vector2D const& other) const;
+		[[nodiscard]] Vector2D operator *(float s) const;
+		[[nodiscard]] Vector2D operator /(float s) const;
 		void operator +=(Vector2D const& other);
 		void operator -=(Vector2D const& other);
-		void operator *=(double const s);
-		void operator /=(double const s);
-		[[nodiscard]] double length() const;
-		[[nodiscard]] double distance(Vector2D const& other) const;
+		void operator *=(float const s);
+		void operator /=(float const s);
+		[[nodiscard]] float length() const;
+		[[nodiscard]] float distance(Vector2D const& other) const;
 		[[nodiscard]] Vector2D normalize() const;
 		friend std::ostream& operator<<(std::ostream& os, Vector2D const& vec);
-
-	private:
-		double m_x{}, m_y{};
 	};
 }
 
 template <>
 struct std::formatter<SGE2D::Math::Vector2D> : std::formatter<std::string> {
 	auto format(SGE2D::Math::Vector2D const& v, std::format_context& ctx) const {
-		return std::formatter<std::string>::format(std::format("Vector2D={{X={}, Y={}}}", v.getX(), v.getY()), ctx);
+		return std::formatter<std::string>::format(std::format("Vector2D={{X={}, Y={}}}", v.x, v.y), ctx);
 	}
 };
