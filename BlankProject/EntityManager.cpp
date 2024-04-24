@@ -33,7 +33,6 @@ namespace SGE2D::Entts
 	void EntityManager::removeEntities(EntityVec& vec)
 	{
 		std::erase_if(vec, [](auto const& entity) { return !entity->isActive(); });
-
 	}
 
 	std::shared_ptr<Entity> EntityManager::addEntity(std::string const& tag)

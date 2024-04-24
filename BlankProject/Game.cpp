@@ -87,8 +87,8 @@ void Game::init(std::string const& path)
 	m_text.setPosition(0, static_cast<float>(m_window.getSize().y - m_text.getCharacterSize()));
 
 	/*
-	 * Game init logic
-	 */
+	* Game init logic
+	*/
 	spawnPlayer(); // Spawn the player at the start of the game
 }
 
@@ -175,6 +175,7 @@ void Game::sMovement() const
 			}
 			if (entity->cInput->down)
 			{
+				// speed from config
 				playerVelocity.y += 1.0f;
 			}
 			if (entity->cInput->left)

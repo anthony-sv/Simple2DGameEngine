@@ -73,4 +73,3 @@ private:
 	PlayerConfig m_playerConfig;
 	void parseConfigFile(std::string const& path);
 };
-

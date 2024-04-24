@@ -48,6 +48,7 @@ namespace SGE2D::Components
 		bool down = false;
 		bool left = false;
 		bool right = false;
+		bool shoot = false;
 		[[nodiscard]] CInput() = default;
 	};
 
@@ -63,5 +64,12 @@ namespace SGE2D::Components
 		bool render{ true };
 		explicit [[nodiscard]] CRender(bool const render)
 			:render{ render } {}
+	};
+
+	struct [[nodiscard]] CBoundingBox final : IComponent
+	{
+		Math::Vector2D size;
+		explicit [[nodiscard]] CBoundingBox(Math::Vector2D const size)
+			:size{ size } {}
 	};
 }

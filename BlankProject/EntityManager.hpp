@@ -25,6 +25,3 @@ namespace SGE2D::Entts
 		std::size_t m_totalEntities{ 0 };
 	};
 };
-
-
-
