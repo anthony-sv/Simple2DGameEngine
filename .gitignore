@@ -365,3 +365,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /BlankProject/imgui.ini
+/BlankProject/config.txt
