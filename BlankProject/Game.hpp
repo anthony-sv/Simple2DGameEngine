@@ -6,7 +6,7 @@
 #include "Entity.hpp"
 #include "EntityManager.hpp"
 
-struct [[nodiscard]] WindowConfig final
+/*struct [[nodiscard]] WindowConfig final
 {
 	int WINDOW_WIDTH,
 		WINDOW_HEIGHT,
@@ -35,7 +35,7 @@ struct [[nodiscard]] PlayerConfig final
 		COLLISION_RADIUS,
 		OUTLINE_THICKNESS;
 	bool RENDER;
-};
+};*/
 
 class [[nodiscard]] Game final
 {

@@ -15,10 +15,11 @@ namespace SGE2D // now once per game but can be once per scene
 		void addFont(std::string const& name, std::string const& path);
 		void addAnimation(std::string const& name, Animation::Animation const& animation);
 
-		sf::Texture& getTexture(std::string const& name);
-		sf::Sound& getSound(std::string const& name);
-		sf::Font& getFont(std::string const& name);
-		Animation::Animation& getAnimation(std::string const& name);
+		sf::Texture const& getTexture(std::string const& name) const;
+		sf::Sound const& getSound(std::string const& name) const;
+		sf::Font const& getFont(std::string const& name) const;
+		Animation::Animation const& getAnimation(std::string const& name) const;
+		void loadFromFile(std::string const& path);
 	private:
 		std::unordered_map<std::string, sf::Texture> m_textures;
 		std::unordered_map<std::string, sf::Sound> m_sounds;

@@ -2,11 +2,13 @@
 #include "Vector2D.hpp"
 #include <SFML/Graphics.hpp>
 
+#include "Animation.hpp"
+
 namespace SGE2D::Components
 {
 	struct IComponent
 	{
-		bool has = false;
+		bool has{ false };
 		virtual ~IComponent() = default;
 	};
 
@@ -44,18 +46,18 @@ namespace SGE2D::Components
 
 	struct [[nodiscard]] CInput final : IComponent
 	{
-		bool up = false;
-		bool down = false;
-		bool left = false;
-		bool right = false;
-		bool shoot = false;
+		bool up {false };
+		bool down {false};
+		bool left {false};
+		bool right {false};
+		bool shoot {false};
 		[[nodiscard]] CInput() = default;
 	};
 
 	struct [[nodiscard]] CCollision final : IComponent
 	{
 		float radius{ 0.0f };
-		explicit [[nodiscard]] CCollision(float radius)
+		explicit [[nodiscard]] CCollision(float const radius)
 			:radius{ radius } {}
 	};
 
@@ -71,5 +73,38 @@ namespace SGE2D::Components
 		Math::Vector2D size;
 		explicit [[nodiscard]] CBoundingBox(Math::Vector2D const size)
 			:size{ size } {}
+	};
+
+	struct [[nodiscard]] CState final : IComponent
+	{
+		[[nodiscard]] CState() = default;
+		explicit [[nodiscard]] CState(std::string const& state)
+			: state{ state } {}
+		std::string state {"NONE"};
+	};
+
+	struct [[nodiscard]] CGravity final : IComponent
+	{
+		float gravity{ 0.0f };
+		CGravity() = default;
+		explicit [[nodiscard]] CGravity(float const gravity)
+			: gravity{ gravity } {}
+	};
+
+	struct [[nodiscard]] CAnimation final : IComponent
+	{
+		Animation::Animation animation;
+		bool repeat{ false };
+		[[nodiscard]] CAnimation(Animation::Animation const& animation, bool const repeat)
+			: animation{ animation }, repeat{ repeat } {}
+	};
+
+	struct CBoundingBoxCollision final : IComponent
+	{
+		Math::Vector2D size;
+		Math::Vector2D halfSize;
+		[[nodiscard]] CBoundingBoxCollision() = default;
+		[[nodiscard]] CBoundingBoxCollision(Math::Vector2D const& size)
+			:size{ size }, halfSize{ size / 2.0f } {}
 	};
 }

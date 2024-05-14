@@ -4,20 +4,21 @@
 #include <SFML/Graphics.hpp>
 
 #include "Scene.hpp"
+#include "GameEngine.hpp"
 
 class Scene_Menu : public SGE2D::Scene
 {
 public:
-	void update() override;
-private:
+	explicit [[nodiscard]] Scene_Menu(GameEngine* gameEngine = nullptr);
+	void sRender() override;
+protected:
+	std::string m_menuTitle;
 	std::vector <std::string> m_menuStrings;
 	sf::Text m_menuText;
 	std::vector <std::string> m_levelPaths;
-	int m_menuIndex;
-
-	void init() override;
-	// Systems
-	void sRender() override;
-	void sDoAction(SGE2D::Actions action) override;
+	std::size_t m_menuIndex{ 0 };
+	void init();
+	void update() override;
+	void onEnd() override;
+	void sDoAction(SGE2D::Actions const& action) override;
 };
-
