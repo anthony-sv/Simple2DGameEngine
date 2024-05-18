@@ -1,36 +1,46 @@
 #include "Scene.hpp"
 
-SGE2D::Scene::Scene(std::shared_ptr<GameEngine> const& gameEngine)
-	: m_game(gameEngine)
+SGE2D::Scenes::Scene::Scene(GameEngine* gameEngine)
+	: m_game{ gameEngine }
 {
 }
 
-void SGE2D::Scene::simulate(int const& timesUpdate)
+void SGE2D::Scenes::Scene::simulate(std::size_t const& timesUpdate)
 {
 	// TODO
 }
 
-void SGE2D::Scene::doAction(Actions const& action)
+void SGE2D::Scenes::Scene::doAction(Actions const& action)
 {
 	sDoAction(action);
 }
 
-void SGE2D::Scene::registerAction(int inputKey, std::string const& actionName)
+void SGE2D::Scenes::Scene::registerAction(int inputKey, std::string const& actionName)
 {
 	m_actions[inputKey] = actionName;
 }
 
-int SGE2D::Scene::getCurrentFrame() const
+std::size_t SGE2D::Scenes::Scene::getCurrentFrame() const
 {
 	return m_currentFrame;
 }
 
-void SGE2D::Scene::setPaused(bool const paused)
+std::size_t SGE2D::Scenes::Scene::width() const
+{
+	return m_game->getWindow().getSize().x;
+}
+
+std::size_t SGE2D::Scenes::Scene::height() const
+{
+	return m_game->getWindow().getSize().y;
+}
+
+void SGE2D::Scenes::Scene::setPaused(bool const paused)
 {
 	m_paused = paused;
 }
 
-std::unordered_map<int, std::string> const& SGE2D::Scene::getActionMap() const
+std::unordered_map<int, std::string> const& SGE2D::Scenes::Scene::getActionMap() const
 {
 	return m_actions;
 }

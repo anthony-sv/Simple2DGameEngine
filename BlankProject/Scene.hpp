@@ -1,9 +1,10 @@
 #pragma once
+#include "GameEngine.hpp"
 #include "Actions.hpp"
 #include "EntityManager.hpp"
-#include "GameEngine.hpp"
 
-namespace SGE2D
+class GameEngine;
+namespace SGE2D::Scenes
 {
 	class Scene
 	{
@@ -12,9 +13,9 @@ namespace SGE2D
 		virtual void sDoAction(Actions const& action) = 0;
 		virtual void sRender() = 0;
 
-		[[nodiscard]] Scene() = default;
-		explicit [[nodiscard]] Scene(GameEngine* gameEngine);
-		virtual ~Scene();
+		//[[nodiscard]] Scene() = default;
+		[[nodiscard]] explicit Scene(GameEngine* gameEngine);
+		//virtual ~Scene();
 
 		void simulate(std::size_t const& frames);
 		virtual void doAction(Actions const& action);
@@ -25,9 +26,8 @@ namespace SGE2D
 
 		std::size_t width() const;
 		std::size_t height() const;
-		void drawLine(Math::Vector2D const& point1, Math::Vector2D const& point2);
 	protected:
-		std::shared_ptr<GameEngine> m_game;
+		GameEngine* m_game;
 		Entts::EntityManager m_entities;
 		std::size_t m_currentFrame{ 0 };
 		std::unordered_map<int, std::string> m_actions;

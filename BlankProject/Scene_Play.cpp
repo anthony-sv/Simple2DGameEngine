@@ -49,29 +49,32 @@ void Scene_Play::loadLevel(std::string const& path)
 	// some sample entities
 	auto brick{ m_entities.addEntity("tile") };
 	// IMPORTANT: always add the CAnimation component first so that gridToMidPixel works
-	brick->addComponent<SGE2D::Components::CAnimation>("brick", m_game->getAssets().getAnimation("brick"));
-	brick->addComponent<SGE2D::Components::CTransform>({ 96,480 });
+	brick->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("brick"), true);
+	//brick->addComponent<SGE2D::Components::CAnimation>("brick", m_game->getAssets().getAnimation("brick"));
+	brick->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 96, 480 });
 	// NOTE: You final code should position the entity with the grid x,y position read from
 	// brick->addComponent<SGE2D::Components::CTransform>(gridToMidPixel(gridX, gridY, brick));
 
-	if (brick->getComponent<SGE2D::Components::CAnimation>().animation.getName() == "Brick")
+	if (brick->cAnimation->animation.getName() == "Brick")
 	{
 		std::println("This could be a good way of identifying if a tile is a brick!");
 	}
 
 	auto block{ m_entities.addEntity("tile") };
-	block->addComponent<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Block"), true);
-	block->addComponent<SGE2D::Components::CTransform>({ 224,480 });
+	block->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Block"), true);
+	//block->addComponent<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Block"), true);
+	block->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 224,480 });
 	// add a bounding box, this will now show up if we press the 'C' key
-	block->addComponent<SGE2D::Components::CBoundingBox>(m_game->getAssets().getAnimation("Block").getSize());
+	block->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(m_game->getAssets().getAnimation("Block").getSize());
 
 	auto question{ m_entities.addEntity("tile") };
-	question->addComponent<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Question"), true);
-	question->addComponent<SGE2D::Components::CTransform>({ 352,480 });
+	question->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Question"), true);
+	//question->addComponent<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Question"), true);
+	question->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 352,480 });
 
 	// NOTE: THIS IS INCREDIBLY IMPORTANT PLEASE READ THIS EXAMPLE
 	// Components are now returned by reference, rather than by pointer
-	// If you do not specify a referencew variable type, it will COPY the component
+	// If you do not specify a reference variable type, it will COPY the component
 	// Here is an example:
 	//
 	// This will COPY the transform into the variable 'transform1' - it is INCORRECT
@@ -87,9 +90,9 @@ void Scene_Play::spawnPlayer()
 {
 	// here is a sample player entity which you can use to construct other entities
 	m_player = m_entities.addEntity("Player");
-	m_player->addComponent<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Stand"), true);
-	m_player->addComponent<SGE2D::Components::CTransform>({ 224, 352 });
-	m_player->addComponent<SGE2D::Components::CBoundingBox>({ 48, 48 });
+	m_player->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Stand"), true);
+	m_player->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 224, 352 });
+	m_player->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(SGE2D::Math::Vector2D{ 48, 48 });
 
 	// TODO: be sure to add the remaining components to the player entity
 }
@@ -97,6 +100,16 @@ void Scene_Play::spawnPlayer()
 void Scene_Play::spawnBullet()
 {
 	// TODO: this should spawn a bullet at the given entity, going in the direction the entity is facing
+}
+
+void Scene_Play::drawLine(SGE2D::Math::Vector2D const& point1, SGE2D::Math::Vector2D const& point2) const
+{
+	sf::Vertex const line[] =
+	{
+		sf::Vertex(sf::Vector2f(point1.x, point1.y)),
+		sf::Vertex(sf::Vector2f(point2.x, point2.y))
+	};
+	m_game->getWindow().draw(line, 2, sf::Lines);
 }
 
 void Scene_Play::update()
@@ -156,6 +169,7 @@ void Scene_Play::sDoAction(SGE2D::Actions const& action)
 		else if (action.getName() == "QUIT")
 		{
 			onEnd();
+			// check this.
 		}
 		else if (action.getName() == "TOGGLE_TEXTURE")
 		{
@@ -171,7 +185,8 @@ void Scene_Play::sDoAction(SGE2D::Actions const& action)
 		}
 		else if (action.getName() == "UP")
 		{
-			m_player->getComponent<SGE2D::Components::CInput>().up = true;
+			if (m_player && m_player->cInput)
+				m_player->cInput->up = true;
 		}
 	}
 	else if (action.getType() == "END")
@@ -206,7 +221,7 @@ void Scene_Play::sRender()
 		m_game->getWindow().clear(sf::Color(50, 50, 150));
 
 	// set the viewport of the window to be centered on the player if it's far enough to the right
-	auto& playerPosition = m_player->getComponent<SGE2D::Components::CTransform>().position;
+	auto& playerPosition = m_player->cTransform->position;
 	float windowCenterX = std::max(m_game->getWindow().getSize().x / 2.0f, playerPosition.x);
 	sf::View view = m_game->getWindow().getView();
 	view.setCenter(windowCenterX, m_game->getWindow().getSize().y - view.getCenter().y);
@@ -217,13 +232,13 @@ void Scene_Play::sRender()
 	{
 		for (auto& entity : m_entities.getEntities())
 		{
-			auto& transform = entity->getComponent<SGE2D::Components::CTransform>();
-			if (entity->hasComponent<SGE2D::Components::CAnimation>())
+			auto& transform = entity->cTransform;
+			if (entity->cAnimation)
 			{
-				auto& animation = entity->getComponent<SGE2D::Components::CAnimation>().animation;
-				animation.getSprite().setPosition(transform.position.x, transform.position.y);
-				animation.getSprite().setScale(transform.scale.x, transform.scale.y);
-				animation.getSprite().setRotation(transform.angle);
+				auto& animation = entity->cAnimation->animation;
+				animation.getSprite().setPosition(transform->position.x, transform->position.y);
+				animation.getSprite().setScale(transform->scale.x, transform->scale.y);
+				animation.getSprite().setRotation(transform->angle);
 				m_game->getWindow().draw(animation.getSprite());
 			}
 		}
@@ -233,14 +248,14 @@ void Scene_Play::sRender()
 	{
 		for (auto& entity : m_entities.getEntities())
 		{
-			if (entity->hasComponent<SGE2D::Components::CBoundingBox>())
+			if (entity->cBoundingBox)
 			{
-				auto& box = entity->getComponent<SGE2D::Components::CBoundingBox>();
-				auto& transform = entity->getComponent<SGE2D::Components::CTransform>();
+				auto& box = entity->cBoundingBox;
+				auto& transform = entity->cTransform;
 				sf::RectangleShape rect;
-				rect.setSize({ box.size.x - 1, box.size.y - 1 });
-				rect.setOrigin(box.halfSize.x, box.halfSize.y);
-				rect.setPosition(transform.position.x, transform.position.y);
+				rect.setSize({ box->size.x - 1, box->size.y - 1 });
+				rect.setOrigin(box->halfSize.x, box->halfSize.y);
+				rect.setPosition(transform->position.x, transform->position.y);
 				rect.setFillColor({ 0,0,0,0 });
 				rect.setOutlineColor({ 255,255,255,255 });
 				rect.setOutlineThickness(1);

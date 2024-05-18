@@ -3,6 +3,7 @@
 #include "Scene_Play.hpp"
 
 Scene_Menu::Scene_Menu(GameEngine* gameEngine)
+	: Scene(gameEngine)
 {
 	init();
 }

@@ -19,6 +19,8 @@ namespace SGE2D::Entts
 		std::unique_ptr<Components::CInput> cInput;
 		std::unique_ptr<Components::CCollision> cCollision;
 		std::unique_ptr<Components::CRender> cRender;
+		std::unique_ptr<Components::CAnimation> cAnimation;
+		std::unique_ptr<Components::CBoundingBoxCollision> cBoundingBox;
 	private:
 		bool m_active{ true };
 		std::size_t m_id{ 0 };

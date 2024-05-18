@@ -1,5 +1,5 @@
 #include "Game.hpp"
-
+/*
 #include <print>
 #include <iostream>
 #include <thread>
@@ -86,9 +86,8 @@ void Game::init(std::string const& path)
 	m_text = { "Sample Text", m_font, m_fontConfig.FONT_SIZE };
 	m_text.setPosition(0, static_cast<float>(m_window.getSize().y - m_text.getCharacterSize()));
 
-	/*
-	* Game init logic
-	*/
+	Game init logic
+
 	spawnPlayer(); // Spawn the player at the start of the game
 }
 
@@ -366,3 +365,4 @@ void Game::sUserInput()
 		}
 	}
 }
+*/

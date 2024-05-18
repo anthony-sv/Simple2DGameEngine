@@ -67,13 +67,13 @@ namespace SGE2D::Components
 		explicit [[nodiscard]] CRender(bool const render)
 			:render{ render } {}
 	};
-
+	/*
 	struct [[nodiscard]] CBoundingBox final : IComponent
 	{
 		Math::Vector2D size;
 		explicit [[nodiscard]] CBoundingBox(Math::Vector2D const size)
 			:size{ size } {}
-	};
+	};*/
 
 	struct [[nodiscard]] CState final : IComponent
 	{
@@ -104,7 +104,7 @@ namespace SGE2D::Components
 		Math::Vector2D size;
 		Math::Vector2D halfSize;
 		[[nodiscard]] CBoundingBoxCollision() = default;
-		[[nodiscard]] CBoundingBoxCollision(Math::Vector2D const& size)
+		explicit [[nodiscard]] CBoundingBoxCollision(Math::Vector2D const& size)
 			:size{ size }, halfSize{ size / 2.0f } {}
 	};
 }

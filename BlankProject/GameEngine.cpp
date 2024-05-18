@@ -25,7 +25,7 @@ void GameEngine::quit()
 	m_running = false;
 }
 
-void GameEngine::changeScene(std::string const& name, std::shared_ptr<SGE2D::Scene> scene, bool endCurrentScene)
+void GameEngine::changeScene(std::string const& name, std::shared_ptr<SGE2D::Scenes::Scene> scene, bool endCurrentScene)
 {
 	if (scene)
 	{
@@ -104,7 +104,7 @@ void GameEngine::init(std::string const& path)
 	changeScene("MENU", std::make_shared<Scene_Menu>(this));
 }
 
-std::shared_ptr<SGE2D::Scene> GameEngine::currentScene()
+std::shared_ptr<SGE2D::Scenes::Scene> GameEngine::currentScene()
 {
 	return m_scenes.at(m_currentScene);
 }

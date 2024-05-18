@@ -1,5 +1,4 @@
 #pragma once
-#include "Game.hpp" // FIXME: This shouldn't be necessary
 #include "Scene.hpp"
 
 struct [[nodiscard]] PlayerConfig2 final
@@ -8,11 +7,10 @@ struct [[nodiscard]] PlayerConfig2 final
 	std::string WEAPON;
 };
 
-class Scene_Play : public SGE2D::Scene
+class Scene_Play : public SGE2D::Scenes::Scene
 {
 public:
-	[[nodiscard]] Scene_Play() = default;
-	explicit Scene_Play(GameEngine* gameEngine, std::string const& levelPath);
+	[[nodiscard]] explicit Scene_Play(GameEngine* gameEngine, std::string const& levelPath);
 	void update() override;
 	// Systems
 	void sRender() override;
@@ -28,6 +26,7 @@ public:
 	SGE2D::Math::Vector2D gridToMidPixel(float gridX, float gridY, std::shared_ptr<SGE2D::Entts::Entity> entity);
 	void spawnPlayer();
 	void spawnBullet();
+	void drawLine(SGE2D::Math::Vector2D const& point1, SGE2D::Math::Vector2D const& point2) const;
 protected:
 	std::shared_ptr<SGE2D::Entts::Entity> m_player;
 	std::string m_levelPath;

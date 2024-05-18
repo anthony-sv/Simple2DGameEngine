@@ -1,4 +1,5 @@
 #pragma once
+/*
 #include <SFML/Graphics.hpp>
 #include "imgui.h"
 #include "imgui-SFML.h"
@@ -35,7 +36,7 @@ struct [[nodiscard]] PlayerConfig final
 		COLLISION_RADIUS,
 		OUTLINE_THICKNESS;
 	bool RENDER;
-};*/
+};
 
 class [[nodiscard]] Game final
 {
@@ -72,4 +73,4 @@ private:
 	FontConfig m_fontConfig;
 	PlayerConfig m_playerConfig;
 	void parseConfigFile(std::string const& path);
-};
+}; */

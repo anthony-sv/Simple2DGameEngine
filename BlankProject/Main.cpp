@@ -2,7 +2,7 @@
 #include <print>
 #include <boost/log/trivial.hpp>
 
-#include "Game.hpp"
+#include "GameEngine.hpp"
 
 int main(int argc, char** argv)
 {
@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 	vec1 = vec1 * 2;
 	std::cout << "vec1:" << vec1 << '\n';
 	std::println("{}", vec1);
-	Game game{ "config.txt" };
+	GameEngine game{ "config.txt" };
 	game.run();
 	return 0;
 }

@@ -6,7 +6,7 @@
 #include "Scene.hpp"
 #include "GameEngine.hpp"
 
-class Scene_Menu : public SGE2D::Scene
+class Scene_Menu : public SGE2D::Scenes::Scene
 {
 public:
 	explicit [[nodiscard]] Scene_Menu(GameEngine* gameEngine = nullptr);
