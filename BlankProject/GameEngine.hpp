@@ -30,6 +30,7 @@ private:
 	SGE2D::Assets m_assets;
 	std::string m_currentScene;
 	bool m_running{ true };
+	std::size_t m_simulationSpeed{ 1 };
 	void init(std::string const& path);
 	std::shared_ptr<SGE2D::Scenes::Scene> currentScene();
 };

@@ -101,7 +101,7 @@ GameEngine::GameEngine(std::string const& path)
 void GameEngine::init(std::string const& path)
 {
 	m_assets.loadFromFile(path);
-	m_window.create(sf::VideoMode(1280, 760), "Game Test 1");
+	m_window.create(sf::VideoMode(1280, 768), "Game Test 1");
 	m_window.setFramerateLimit(60);
 	changeScene("MENU", std::make_shared<Scene_Menu>(this));
 }

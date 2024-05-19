@@ -26,7 +26,6 @@ public:
 	SGE2D::Math::Vector2D gridToMidPixel(float gridX, float gridY, std::shared_ptr<SGE2D::Entts::Entity> entity);
 	void spawnPlayer();
 	void spawnBullet();
-	void drawLine(SGE2D::Math::Vector2D const& point1, SGE2D::Math::Vector2D const& point2) const;
 protected:
 	std::shared_ptr<SGE2D::Entts::Entity> m_player;
 	std::string m_levelPath;
@@ -34,7 +33,7 @@ protected:
 	bool m_drawTextures{ true };
 	bool m_drawCollision{ false };
 	bool m_drawGrid{ false };
-	SGE2D::Math::Vector2D const gridSize{ 32,32 };
+	SGE2D::Math::Vector2D const gridSize{ 64,64 };
 	sf::Text m_gridText;
 
 	void init(std::string const& levelPath);

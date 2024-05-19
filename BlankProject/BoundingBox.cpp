@@ -4,6 +4,9 @@ SGE2D::Math::Vector2D SGE2D::Physics::BoundingBox::getOverlap(std::shared_ptr<En
 	std::shared_ptr<Entts::Entity> b)
 {
 	// TODO: return the overlap rectangle size of the bounding boxes of the two entities
+	// check a and b have boundingboxes,
+	// check they have transform components
+	// compute and return
 	return{ 0,0 };
 }
 

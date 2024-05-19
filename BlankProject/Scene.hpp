@@ -13,7 +13,7 @@ namespace SGE2D::Scenes
 		virtual void sDoAction(Actions const& action) = 0;
 		virtual void sRender() = 0;
 
-		//[[nodiscard]] Scene() = default;
+		[[nodiscard]] Scene() = default;
 		[[nodiscard]] explicit Scene(GameEngine* gameEngine);
 		//virtual ~Scene();
 
@@ -26,8 +26,9 @@ namespace SGE2D::Scenes
 
 		std::size_t width() const;
 		std::size_t height() const;
+		void drawLine(SGE2D::Math::Vector2D const& point1, SGE2D::Math::Vector2D const& point2) const;
 	protected:
-		GameEngine* m_game;
+		GameEngine* m_game{ nullptr };
 		Entts::EntityManager m_entities;
 		std::size_t m_currentFrame{ 0 };
 		std::unordered_map<int, std::string> m_actions;

@@ -13,6 +13,7 @@ void Scene_Play::init(std::string const& levelPath)
 	registerAction(sf::Keyboard::T, "TOGGLE_TEXTURE");
 	registerAction(sf::Keyboard::C, "TOGGLE_COLLISION");
 	registerAction(sf::Keyboard::G, "TOGGLE_GRID");
+	registerAction(sf::Keyboard::W, "UP");
 
 	// TODO: Register all other gameplay Actions
 
@@ -84,6 +85,10 @@ void Scene_Play::loadLevel(std::string const& path)
 	// This will REFERENCE the transform into the variable 'transform2' - it is CORRECT
 	// Now any changes you make to transform2 will be reflected in the entity
 	// auto& transform2 = entity->get<CTransform>()
+	auto enemy{ m_entities.addEntity("Enemy") };
+	enemy->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Brick"), true);
+	enemy->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 480, 480 });
+	enemy->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(SGE2D::Math::Vector2D{ 48, 48 });
 }
 
 void Scene_Play::spawnPlayer()
@@ -93,6 +98,9 @@ void Scene_Play::spawnPlayer()
 	m_player->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Stand"), true);
 	m_player->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 224, 352 });
 	m_player->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(SGE2D::Math::Vector2D{ 48, 48 });
+	m_player->cInput = std::make_unique<SGE2D::Components::CInput>();
+	m_player->cGravity = std::make_unique<SGE2D::Components::CGravity>(0.1f);
+	m_player->cState = std::make_unique<SGE2D::Components::CState>();
 
 	// TODO: be sure to add the remaining components to the player entity
 }
@@ -100,16 +108,6 @@ void Scene_Play::spawnPlayer()
 void Scene_Play::spawnBullet()
 {
 	// TODO: this should spawn a bullet at the given entity, going in the direction the entity is facing
-}
-
-void Scene_Play::drawLine(SGE2D::Math::Vector2D const& point1, SGE2D::Math::Vector2D const& point2) const
-{
-	sf::Vertex const line[] =
-	{
-		sf::Vertex(sf::Vector2f(point1.x, point1.y)),
-		sf::Vertex(sf::Vector2f(point2.x, point2.y))
-	};
-	m_game->getWindow().draw(line, 2, sf::Lines);
 }
 
 void Scene_Play::update()
@@ -126,6 +124,25 @@ void Scene_Play::update()
 
 void Scene_Play::sMovement()
 {
+	SGE2D::Math::Vector2D playerVelocity{ 0, m_player->cTransform->velocity.y };
+	if (m_player && m_player->cInput && m_player->cInput->up)
+	{
+		//playerVelocity.y = -m_playerConfig.JUMP;
+		m_player->cState->state = "Running";
+		playerVelocity.y = -3;
+	}
+	m_player->cTransform->position += playerVelocity;
+
+	for (auto& entity : m_entities.getEntities())
+	{
+		entity->cTransform->position += entity->cTransform->velocity;
+		if (entity->cGravity) // dont go infinitely fast in a particular direction
+		{
+			entity->cTransform->velocity.y += entity->cGravity->gravity;
+			// if the player is moving faster than max speed in any direction,
+			// set its speed in that direction to the max speed
+		}
+	}
 	// TODO: Implement player movement / jumping based on it's CInput component
 	// TODO: Implement gravity's effect on the player
 	// TODO: Implement the maximum player speed in both X and Y direction (check max)
@@ -185,18 +202,29 @@ void Scene_Play::sDoAction(SGE2D::Actions const& action)
 		}
 		else if (action.getName() == "UP")
 		{
-			if (m_player && m_player->cInput)
-				m_player->cInput->up = true;
+			m_player->cInput->up = true;
 		}
 	}
 	else if (action.getType() == "END")
 	{
+		if (action.getName() == "UP")
+		{
+			m_player->cInput->up = false;
+		}
 	}
 }
 
 
 void Scene_Play::sAnimation()
 {
+	if (m_player->cState && m_player->cState->state == "onAir")
+	{
+		m_player->cAnimation->animation = m_game->getAssets().getAnimation("Jump");
+	}
+	if (m_player->cState && m_player->cState->state == "Running")
+	{
+		m_player->cAnimation->animation = m_game->getAssets().getAnimation("Jump");
+	}
 	// TODO: Complete the Animation class code first
 
 	// TODO: set the animation of the player based on it's CState component

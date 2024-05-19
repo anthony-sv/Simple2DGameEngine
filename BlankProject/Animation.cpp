@@ -41,7 +41,7 @@ SGE2D::Animation::Animation::Animation(std::string const& name, sf::Texture cons
 
 SGE2D::Animation::Animation::Animation(std::string const& name, sf::Texture const& texture, std::size_t const frameCount,
 	std::size_t const speed)
-	: m_frameCount{ frameCount }, m_speed{ speed }, m_name{ name }
+	: m_frameCount{ frameCount }, m_currentFrame{ 0 }, m_speed{ speed }, m_name{ name }
 {
 	m_sprite.setTexture(texture);
 	m_size = { static_cast<float>(texture.getSize().x) / frameCount, static_cast<float>(texture.getSize().y) };

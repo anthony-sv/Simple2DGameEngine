@@ -12,10 +12,12 @@ public:
 	explicit [[nodiscard]] Scene_Menu(GameEngine* gameEngine = nullptr);
 	void sRender() override;
 protected:
+	sf::Vector2f round(const sf::Vector2f vector);
 	std::string m_menuTitle;
 	std::vector <std::string> m_menuStrings;
 	sf::Text m_menuText;
 	std::vector <std::string> m_levelPaths;
+	std::vector <sf::Text> m_menuItems;
 	std::size_t m_menuIndex{ 0 };
 	void init();
 	void update() override;

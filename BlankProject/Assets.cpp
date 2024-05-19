@@ -85,6 +85,7 @@ void SGE2D::Assets::loadFromFile(std::string const& path)
 					std::println(std::cerr, "Error loading texture");
 					std::quick_exit(EXIT_FAILURE);
 				}
+				std::println("texture {} size is {},{}", name, texture.getSize().x, texture.getSize().y);
 				m_textures[name] = texture;
 			}
 			else if (first == "Animation")

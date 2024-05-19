@@ -21,6 +21,8 @@ namespace SGE2D::Entts
 		std::unique_ptr<Components::CRender> cRender;
 		std::unique_ptr<Components::CAnimation> cAnimation;
 		std::unique_ptr<Components::CBoundingBoxCollision> cBoundingBox;
+		std::unique_ptr<Components::CGravity> cGravity;
+		std::unique_ptr<Components::CState> cState;
 	private:
 		bool m_active{ true };
 		std::size_t m_id{ 0 };

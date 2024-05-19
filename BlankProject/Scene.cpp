@@ -44,3 +44,13 @@ std::unordered_map<int, std::string> const& SGE2D::Scenes::Scene::getActionMap()
 {
 	return m_actions;
 }
+
+void SGE2D::Scenes::Scene::drawLine(SGE2D::Math::Vector2D const& point1, SGE2D::Math::Vector2D const& point2) const
+{
+	sf::Vertex const line[] =
+	{
+		sf::Vertex(sf::Vector2f(point1.x, point1.y)),
+		sf::Vertex(sf::Vector2f(point2.x, point2.y))
+	};
+	m_game->getWindow().draw(line, 2, sf::Lines);
+}
