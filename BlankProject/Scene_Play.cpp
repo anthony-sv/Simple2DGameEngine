@@ -49,26 +49,26 @@ void Scene_Play::loadLevel(std::string const& path)
 	// some sample entities
 	auto brick{ m_entities.addEntity("tile") };
 	// IMPORTANT: always add the CAnimation component first so that gridToMidPixel works
-	brick->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("brick"), true);
+	//brick->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("brick"), true);
 	//brick->addComponent<SGE2D::Components::CAnimation>("brick", m_game->getAssets().getAnimation("brick"));
 	brick->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 96, 480 });
 	// NOTE: You final code should position the entity with the grid x,y position read from
 	// brick->addComponent<SGE2D::Components::CTransform>(gridToMidPixel(gridX, gridY, brick));
 
-	if (brick->cAnimation->animation.getName() == "Brick")
+	if (brick->cAnimation && brick->cAnimation->animation.getName() == "Brick")
 	{
 		std::println("This could be a good way of identifying if a tile is a brick!");
 	}
 
 	auto block{ m_entities.addEntity("tile") };
-	block->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Block"), true);
+	//block->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Block"), true);
 	//block->addComponent<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Block"), true);
 	block->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 224,480 });
 	// add a bounding box, this will now show up if we press the 'C' key
-	block->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(m_game->getAssets().getAnimation("Block").getSize());
+	//block->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(m_game->getAssets().getAnimation("Block").getSize());
 
 	auto question{ m_entities.addEntity("tile") };
-	question->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Question"), true);
+	//question->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Question"), true);
 	//question->addComponent<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Question"), true);
 	question->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 352,480 });
 

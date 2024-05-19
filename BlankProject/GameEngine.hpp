@@ -29,7 +29,7 @@ private:
 	sf::RenderWindow m_window;
 	SGE2D::Assets m_assets;
 	std::string m_currentScene;
-	bool m_running{ false };
+	bool m_running{ true };
 	void init(std::string const& path);
 	std::shared_ptr<SGE2D::Scenes::Scene> currentScene();
 };

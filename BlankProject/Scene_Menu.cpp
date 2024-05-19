@@ -1,5 +1,5 @@
 #include "Scene_Menu.hpp"
-
+#include <print>
 #include "Scene_Play.hpp"
 
 Scene_Menu::Scene_Menu(GameEngine* gameEngine)
@@ -35,6 +35,7 @@ void Scene_Menu::sDoAction(SGE2D::Actions const& action)
 		}
 		else if (action.getName() == "PLAY")
 		{
+			std::println("PLAY");
 			m_game->changeScene("PLAY", std::make_shared<Scene_Play>(m_game, m_levelPaths[m_menuIndex]));
 		}
 		else if (action.getName() == "QUIT")
@@ -69,7 +70,7 @@ void Scene_Menu::init()
 	m_levelPaths.emplace_back("Level2.txt");
 	m_levelPaths.emplace_back("Level3.txt");
 
-	m_menuText.setFont(m_game->getAssets().getFont("Font"));
+	m_menuText.setFont(m_game->getAssets().getFont("Tech"));
 	m_menuText.setCharacterSize(64);
 }
 

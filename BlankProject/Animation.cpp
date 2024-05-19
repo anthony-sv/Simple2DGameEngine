@@ -41,8 +41,9 @@ SGE2D::Animation::Animation::Animation(std::string const& name, sf::Texture cons
 
 SGE2D::Animation::Animation::Animation(std::string const& name, sf::Texture const& texture, std::size_t const frameCount,
 	std::size_t const speed)
-	: m_sprite{ texture }, m_frameCount{ frameCount }, m_speed{ speed }, m_name{ name }
+	: m_frameCount{ frameCount }, m_speed{ speed }, m_name{ name }
 {
+	m_sprite.setTexture(texture);
 	m_size = { static_cast<float>(texture.getSize().x) / frameCount, static_cast<float>(texture.getSize().y) };
 	m_sprite.setOrigin(m_size.x / 2.0f, m_size.y / 2.0f);
 	m_sprite.setTextureRect(sf::IntRect{ static_cast<int>(std::floor(m_currentFrame) * m_size.x), 0, static_cast<int>(m_size.x), static_cast<int>(m_size.y) });
