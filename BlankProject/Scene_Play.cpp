@@ -1,5 +1,12 @@
 #include "Scene_Play.hpp"
 
+#include <iostream>
+#include <fstream>
+#include <print>
+
+#include "BoundingBox.hpp"
+#include "Scene_Menu.hpp"
+
 Scene_Play::Scene_Play(GameEngine* gameEngine, std::string const& levelPath)
 	: Scene{ gameEngine }, m_levelPath{ levelPath }
 {
@@ -15,7 +22,10 @@ void Scene_Play::init(std::string const& levelPath)
 	registerAction(sf::Keyboard::G, "TOGGLE_GRID");
 	registerAction(sf::Keyboard::W, "UP");
 
-	// TODO: Register all other gameplay Actions
+	registerAction(sf::Keyboard::W, "JUMP");
+	registerAction(sf::Keyboard::S, "DOWN");
+	registerAction(sf::Keyboard::A, "LEFT");
+	registerAction(sf::Keyboard::D, "RIGHT");
 
 	m_gridText.setCharacterSize(12);
 	m_gridText.setFont(m_game->getAssets().getFont("Tech"));
@@ -24,155 +34,200 @@ void Scene_Play::init(std::string const& levelPath)
 }
 
 
-SGE2D::Math::Vector2D Scene_Play::gridToMidPixel(float gridX, float gridY, std::shared_ptr<SGE2D::Entts::Entity> entity)
+SGE2D::Math::Vector2D Scene_Play::gridToMidPixel(float gridX, float gridY, std::shared_ptr<SGE2D::Entts::Entity> const& entity) const
 {
-	// TODO: This function takes in a grid (x,y) position and an Entity
-	//       Return a Vec2 indicating where the CENTER position of the Entity should be
-	// 		 You must use the Entity's Animation size to position it correctly
-	//       The size of the grid width and height is stored in gridSize
-	//       The bottom-left corner of the Animation should align with the bottom-left of the grid cell
-	return { 0,0 };
+	auto const entitySize = entity->cAnimation->animation.getSize();
+	return { gridX * gridSize.x + entitySize.x / 2.0f,height() - gridY * gridSize.y - entitySize.y / 2.0f };
 }
 
 void Scene_Play::loadLevel(std::string const& path)
 {
-	// reset the entity manager every time we load a new level
 	m_entities = SGE2D::Entts::EntityManager{};
 
-	// TODO: read in the level file and add the appropriate entities
-	//		 use the PlayerConfig2 struct m_playerConfig to store player properties
-	//		 this struct is defined at the top of Scene_Play.hpp
-
-	// NOTE: all of the code below is a samplecode which shows you how to
-	//		 set up entities with the new syntax, it should be removed
-	spawnPlayer();
-
-	// some sample entities
-	auto brick{ m_entities.addEntity("tile") };
-	// IMPORTANT: always add the CAnimation component first so that gridToMidPixel works
-	//brick->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("brick"), true);
-	//brick->addComponent<SGE2D::Components::CAnimation>("brick", m_game->getAssets().getAnimation("brick"));
-	brick->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 96, 480 });
-	// NOTE: You final code should position the entity with the grid x,y position read from
-	// brick->addComponent<SGE2D::Components::CTransform>(gridToMidPixel(gridX, gridY, brick));
-
-	if (brick->cAnimation && brick->cAnimation->animation.getName() == "Brick")
+	std::ifstream file{ path };
+	if (!file)
 	{
-		std::println("This could be a good way of identifying if a tile is a brick!");
+		std::println(std::cerr, "loadLevel failed! at {}", path);
+		std::quick_exit(-1);
 	}
-
-	auto block{ m_entities.addEntity("tile") };
-	//block->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Block"), true);
-	//block->addComponent<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Block"), true);
-	block->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 224,480 });
-	// add a bounding box, this will now show up if we press the 'C' key
-	//block->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(m_game->getAssets().getAnimation("Block").getSize());
-
-	auto question{ m_entities.addEntity("tile") };
-	//question->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Question"), true);
-	//question->addComponent<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Question"), true);
-	question->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 352,480 });
-
-	// NOTE: THIS IS INCREDIBLY IMPORTANT PLEASE READ THIS EXAMPLE
-	// Components are now returned by reference, rather than by pointer
-	// If you do not specify a reference variable type, it will COPY the component
-	// Here is an example:
-	//
-	// This will COPY the transform into the variable 'transform1' - it is INCORRECT
-	// Any changes you make to transform1 will NOT be reflected in the entity
-	// auto transform1 = enmtity->get<CTransform>()
-	//
-	// This will REFERENCE the transform into the variable 'transform2' - it is CORRECT
-	// Now any changes you make to transform2 will be reflected in the entity
-	// auto& transform2 = entity->get<CTransform>()
-	auto enemy{ m_entities.addEntity("Enemy") };
-	enemy->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Brick"), true);
-	enemy->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 480, 480 });
-	enemy->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(SGE2D::Math::Vector2D{ 48, 48 });
+	std::string entityType;
+	while (file >> entityType) {
+		if (entityType == "Tile")
+		{
+			std::string animationName;
+			float gridX, gridY;
+			file >> animationName >> gridX >> gridY;
+			auto const tile = m_entities.addEntity("Tile");
+			tile->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation(animationName), true);
+			tile->cTransform = std::make_unique<SGE2D::Components::CTransform>(gridToMidPixel(gridX, gridY, tile));
+			tile->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(gridSize);
+		}
+		else if (entityType == "Dec")
+		{
+			std::string animationName;
+			float gridX, gridY;
+			file >> animationName >> gridX >> gridY;
+			auto const dec = m_entities.addEntity("Dec");
+			dec->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation(animationName), true);
+			dec->cTransform = std::make_unique<SGE2D::Components::CTransform>(gridToMidPixel(gridX, gridY, dec));
+		}
+		else if (entityType == "Player")
+		{
+			file >> m_playerConfig.X >> m_playerConfig.Y
+				>> m_playerConfig.CX >> m_playerConfig.CY
+				>> m_playerConfig.SPEED
+				>> m_playerConfig.JUMP
+				>> m_playerConfig.MAX_SPEED
+				>> m_playerConfig.GRAVITY;
+			spawnPlayer();
+		}
+		else
+		{
+			std::println(std::cerr, "Unknown entity type {}", entityType);
+		}
+	}
 }
 
 void Scene_Play::spawnPlayer()
 {
-	// here is a sample player entity which you can use to construct other entities
 	m_player = m_entities.addEntity("Player");
 	m_player->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Stand"), true);
-	m_player->cTransform = std::make_unique<SGE2D::Components::CTransform>(SGE2D::Math::Vector2D{ 224, 352 });
-	m_player->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(SGE2D::Math::Vector2D{ 48, 48 });
+	m_player->cTransform = std::make_unique<SGE2D::Components::CTransform>(gridToMidPixel(m_playerConfig.X, m_playerConfig.Y, m_player));
+	m_player->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(SGE2D::Math::Vector2D{ m_playerConfig.CX, m_playerConfig.CY });
 	m_player->cInput = std::make_unique<SGE2D::Components::CInput>();
-	m_player->cGravity = std::make_unique<SGE2D::Components::CGravity>(0.1f);
-	m_player->cState = std::make_unique<SGE2D::Components::CState>();
-
-	// TODO: be sure to add the remaining components to the player entity
-}
-
-void Scene_Play::spawnBullet()
-{
-	// TODO: this should spawn a bullet at the given entity, going in the direction the entity is facing
+	m_player->cGravity = std::make_unique<SGE2D::Components::CGravity>(m_playerConfig.GRAVITY);
+	m_player->cState = std::make_unique<SGE2D::Components::CState>("Standing");
 }
 
 void Scene_Play::update()
 {
 	m_entities.update();
-	// TODO: implement pause functionality
 
-	sMovement();
-	sLifeSpan();
-	sCollision();
+	if (!m_paused)
+	{
+		sMovement();
+		sCollision();
+		m_currentFrame++;
+	}
 	sAnimation();
 	sRender();
 }
 
-void Scene_Play::sMovement()
+void Scene_Play::sMovement() const
 {
-	SGE2D::Math::Vector2D playerVelocity{ 0, m_player->cTransform->velocity.y };
-	if (m_player && m_player->cInput && m_player->cInput->up)
-	{
-		//playerVelocity.y = -m_playerConfig.JUMP;
-		m_player->cState->state = "Running";
-		playerVelocity.y = -3;
-	}
-	m_player->cTransform->position += playerVelocity;
+	m_player->cTransform->velocity.x = 0;
+	if (!m_player && !m_player->cInput)
+		return;
 
-	for (auto& entity : m_entities.getEntities())
+	if (m_player->cInput->up)
 	{
-		entity->cTransform->position += entity->cTransform->velocity;
-		if (entity->cGravity) // dont go infinitely fast in a particular direction
+		if (m_player->cInput->canJump)
 		{
-			entity->cTransform->velocity.y += entity->cGravity->gravity;
-			// if the player is moving faster than max speed in any direction,
-			// set its speed in that direction to the max speed
+			m_player->cInput->canJump = false;
+			m_player->cTransform->velocity.y = -m_playerConfig.JUMP;
 		}
 	}
-	// TODO: Implement player movement / jumping based on it's CInput component
-	// TODO: Implement gravity's effect on the player
-	// TODO: Implement the maximum player speed in both X and Y direction (check max)
-	// NOTE: Setting an entity's scale.x to -1/1 will make it face left/right
+
+	if (m_player->cInput->left)
+	{
+		m_player->cTransform->velocity.x = -m_playerConfig.SPEED;
+		if (m_player->cTransform->scale.x > 0)
+		{
+			m_player->cTransform->scale.x = -1;
+		}
+	}
+	else if (m_player->cInput->right)
+	{
+		m_player->cTransform->velocity.x = m_playerConfig.SPEED;
+		if (m_player->cTransform->scale.x < 0)
+		{
+			m_player->cTransform->scale.x = 1;
+		}
+	}
+
+	if (std::abs(m_player->cTransform->velocity.y) > 0)
+	{
+		m_player->cState->state = "Jumping";
+	}
+	else if (std::abs(m_player->cTransform->velocity.x) > 0)
+	{
+		m_player->cState->state = "Running";
+	}
+	else
+	{
+		m_player->cState->state = "Idle";
+	}
+
+	for (auto const& entity : m_entities.getEntities()) {
+		if (entity->cGravity)
+		{
+			auto& v = entity->cTransform->velocity;
+			v.y += entity->cGravity->gravity;
+			if (v.y > m_playerConfig.MAX_SPEED)
+			{
+				v.y = m_playerConfig.MAX_SPEED;
+			}
+			if (v.x > m_playerConfig.MAX_SPEED)
+			{
+				v.x = m_playerConfig.MAX_SPEED;
+			}
+		}
+		entity->cTransform->previousPosition = entity->cTransform->position;
+		entity->cTransform->position += entity->cTransform->velocity;
+	}
 }
 
-void Scene_Play::sLifeSpan()
+void Scene_Play::sCollision() const
 {
-	// TODO: Check lifespan of entities that have them, and destroy them if they go over
-}
-
-void Scene_Play::sCollision()
-{
-	// REMEMBER: SFML's (0,0) position is on the TOP-LEFT corner
-	// This means jumping will have a negative Y component
-	// and gravity will have a positive Y component
-	// Also, something BELOW something else will have a y value GREATER than the other
-	// Also, something ABOVE something else will have a y value LESS than the other
-
-
-	// TODO: Implement Physics::GetOverlap function, use it inside this function
-
-	// TODO: Implement bullet / tile collisions
-	// Destroy the tile if has a Brick animation
-	// TODO: Implement player / tile collisions and resolutions
-	// Update the CState component of the player to score wheter
-	// it is currently on the ground or in the air. This will be
-	// used by the Animation system
-	// TODO: Check to see if the player has fallen down a hole(y > height())
-	// TODO: Don't let the player walk off the left side of the map
+	m_player->cGravity->gravity = m_playerConfig.GRAVITY;
+	for (auto const& tile : m_entities.getEntities("Tile")) {
+		auto const overlap = SGE2D::Physics::BoundingBox::getOverlap(m_player, tile);
+		auto const pOverlap = SGE2D::Physics::BoundingBox::getPreviousOverlap(m_player, tile);
+		float const dy = tile->cTransform->position.y - m_player->cTransform->position.y;
+		if (0 < overlap.x && -gridSize.y < overlap.y && dy > 0)
+		{
+			if (0 <= overlap.y && pOverlap.y <= 0)
+			{
+				m_player->cInput->canJump = true;
+				m_player->cGravity->gravity = 0;
+				m_player->cTransform->velocity.y = 0;
+				m_player->cTransform->position.y -= overlap.y;
+			}
+		}
+		if (0 < overlap.x && -gridSize.y < overlap.y && dy < 0)
+		{
+			if (0 <= overlap.y && pOverlap.y <= 0)
+			{
+				m_player->cTransform->position.y += overlap.y;
+				m_player->cTransform->velocity.y = 0;
+				if (tile->cAnimation->animation.getName() == "Brick") {
+					std::println("Hit brick from below!");
+				}
+			}
+		}
+		float const dx = tile->cTransform->position.x - m_player->cTransform->position.x;
+		if (0 < overlap.y && -gridSize.x < overlap.x)
+		{
+			if (0 <= overlap.x && pOverlap.x <= 0)
+			{
+				if (dx > 0)
+				{
+					m_player->cTransform->position.x -= overlap.x;
+				}
+				else {
+					m_player->cTransform->position.x += overlap.x;
+				}
+			}
+		}
+	}
+	if (m_player->cTransform->position.y > height())
+	{
+		m_player->cTransform->position = gridToMidPixel(m_playerConfig.X, m_playerConfig.Y, m_player);
+	}
+	if (m_player->cTransform->position.x < m_player->cBoundingBox->size.x / 2.0f)
+	{
+		m_player->cTransform->position.x = m_player->cBoundingBox->size.x / 2.0f;
+	}
 }
 
 void Scene_Play::sDoAction(SGE2D::Actions const& action)
@@ -186,7 +241,6 @@ void Scene_Play::sDoAction(SGE2D::Actions const& action)
 		else if (action.getName() == "QUIT")
 		{
 			onEnd();
-			// check this.
 		}
 		else if (action.getName() == "TOGGLE_TEXTURE")
 		{
@@ -200,62 +254,142 @@ void Scene_Play::sDoAction(SGE2D::Actions const& action)
 		{
 			m_drawGrid = !m_drawGrid;
 		}
-		else if (action.getName() == "UP")
+		else if (action.getName() == "JUMP")
 		{
-			m_player->cInput->up = true;
+			if (m_player->cInput->canJump)
+			{
+				m_player->cInput->up = true;
+			}
+		}
+		else if (action.getName() == "DOWN")
+		{
+			m_player->cInput->down = true;
+		}
+		else if (action.getName() == "LEFT")
+		{
+			m_player->cInput->left = true;
+		}
+		else if (action.getName() == "RIGHT")
+		{
+			m_player->cInput->right = true;
 		}
 	}
 	else if (action.getType() == "END")
 	{
-		if (action.getName() == "UP")
+		if (action.getName() == "JUMP")
 		{
 			m_player->cInput->up = false;
+		}
+		else if (action.getName() == "DOWN")
+		{
+			m_player->cInput->down = false;
+		}
+		else if (action.getName() == "LEFT")
+		{
+			m_player->cInput->left = false;
+		}
+		else if (action.getName() == "RIGHT")
+		{
+			m_player->cInput->right = false;
 		}
 	}
 }
 
 
-void Scene_Play::sAnimation()
+void Scene_Play::sAnimation() const
 {
-	if (m_player->cState && m_player->cState->state == "onAir")
+	if (!m_player->cState)
+		return;
+	if (m_player->cTransform->velocity.y > 0)
 	{
-		m_player->cAnimation->animation = m_game->getAssets().getAnimation("Jump");
+		m_player->cInput->canJump = false;
+		if (m_player->cState->previousState != "Jumping")
+		{
+			m_player->cState->previousState = m_player->cState->state;
+			m_player->cState->state = "Jumping";
+			m_player->cState->changeAnimation = true;
+		}
+		else
+		{
+			m_player->cState->changeAnimation = false;
+		}
 	}
-	if (m_player->cState && m_player->cState->state == "Running")
+	else
 	{
-		m_player->cAnimation->animation = m_game->getAssets().getAnimation("Jump");
+		if (m_player->cTransform->velocity.x != 0)
+		{
+			if (m_player->cState->previousState != "Running")
+			{
+				m_player->cState->previousState = m_player->cState->state;
+				m_player->cState->state = "Running";
+				m_player->cState->changeAnimation = true;
+			}
+			else
+			{
+				m_player->cState->changeAnimation = false;
+			}
+		}
+		else
+		{
+			if (m_player->cState->previousState != "Idle")
+			{
+				m_player->cState->previousState = m_player->cState->state;
+				m_player->cState->state = "Idle";
+				m_player->cState->changeAnimation = true;
+			}
+			else
+			{
+				m_player->cState->changeAnimation = false;
+			}
+		}
 	}
-	// TODO: Complete the Animation class code first
-
-	// TODO: set the animation of the player based on it's CState component
-	// TODO: for each entity with an animation, call entity->getComponent<CAnimation>().animation.update()
-	// if the animation is not repeated, and it has ended, destroy the entity
+	if (m_player->cState->changeAnimation)
+	{
+		std::string animationName;
+		if (m_player->cState->state == "Idle")
+		{
+			animationName = "Stand";
+		}
+		else if (m_player->cState->state == "Jumping")
+		{
+			animationName = "Jump";
+		}
+		else if (m_player->cState->state == "Running")
+		{
+			animationName = "Stand";
+		}
+		m_player->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation(animationName), true);
+	}
+	for (auto const& entity : m_entities.getEntities())
+	{
+		if (entity->cAnimation->animation.hasEnded() && !entity->cAnimation->repeat)
+		{
+			entity->destroy();
+		}
+		if (entity->cAnimation) {
+			entity->cAnimation->animation.update();
+		}
+	}
 }
-
 
 void Scene_Play::onEnd()
 {
-	// TODO: When the scene ends, change back to the menu scene
-	// use m_game->changeScene(correct_params);
+	m_game->changeScene("MENU", std::make_shared<Scene_Menu>(m_game));
 }
-
 
 void Scene_Play::sRender()
 {
-	// color the background darker so you know that the game is paused
 	if (!m_paused)
 		m_game->getWindow().clear(sf::Color(100, 100, 255));
 	else
 		m_game->getWindow().clear(sf::Color(50, 50, 150));
 
-	// set the viewport of the window to be centered on the player if it's far enough to the right
 	auto& playerPosition = m_player->cTransform->position;
 	float windowCenterX = std::max(m_game->getWindow().getSize().x / 2.0f, playerPosition.x);
 	sf::View view = m_game->getWindow().getView();
 	view.setCenter(windowCenterX, m_game->getWindow().getSize().y - view.getCenter().y);
 	m_game->getWindow().setView(view);
 
-	// draw all Entity textures / animations
 	if (m_drawTextures)
 	{
 		for (auto& entity : m_entities.getEntities())
@@ -292,7 +426,6 @@ void Scene_Play::sRender()
 		}
 	}
 
-	// draw the grid so that students can easily debug
 	if (m_drawGrid)
 	{
 		float leftX = m_game->getWindow().getView().getCenter().x - width() / 2;

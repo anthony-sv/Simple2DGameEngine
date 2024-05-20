@@ -9,24 +9,16 @@ namespace SGE2D::Entts
 
 	void EntityManager::update()
 	{
-		// Add new entities to the vector of all entities and the entity map
 		for (auto const& entity : m_toAdd)
 		{
 			m_entities.push_back(entity);
 			m_entityMap[entity->getTag()].push_back(entity);
 		}
-
-		// Remove non-active entities from the vector of all entities
 		removeEntities(m_entities);
-
-		// Remove non-active entities from the entity map
 		for (auto& entityVec : m_entityMap | std::views::values)
-			//for (auto& [key, value] : m_entityMap)  //C++20: way of iterating through [key, value] pairs in a map
 		{
 			removeEntities(entityVec);
 		}
-
-		// Clear the list of entities to add
 		m_toAdd.clear();
 	}
 

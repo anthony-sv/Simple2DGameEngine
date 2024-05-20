@@ -54,14 +54,14 @@ void Scene_Menu::sRender()
 			m_menuItems[i].setFillColor(sf::Color::Black);
 		else
 			m_menuItems[i].setFillColor(sf::Color::White);
-		//m_menuItems[i].setPosition(m_game->getWindow().getSize().x / 2.0f - 26 * (m_menuStrings[i].length() + 1) / 2.0f, m_menuText.getGlobalBounds().top + 10.f + 30.0f * (i + 1));
 		m_menuItems[i].setOrigin(round(m_menuItems[i].getGlobalBounds().getSize() / 2.f + m_menuItems[i].getLocalBounds().getPosition()));
-		m_menuItems[i].setPosition(m_game->getWindow().getSize().x / 2u, m_menuText.getGlobalBounds().top + 30.0f + 30.0f * (i + 1));
+		m_menuItems[i].setPosition(m_game->getWindow().getSize().x / 2u,
+			m_menuText.getGlobalBounds().top + 30.0f + 30.0f * (i + 1));
 		m_game->getWindow().draw(m_menuItems[i]);
 	}
 	sf::Text help{ "W:UP	S:DOWN	D:PLAY	ESC:QUIT", m_game->getAssets().getFont("Tech"), 26 };
 	help.setFillColor(sf::Color::Black);
-	help.setOrigin(round(help.getGlobalBounds().getSize() / 2.f + help.getLocalBounds().getPosition()));
+	help.setOrigin(round(help.getGlobalBounds().getSize() / 2.0f + help.getLocalBounds().getPosition()));
 	help.setPosition(m_game->getWindow().getSize().x / 2u, m_game->getWindow().getSize().y - 30.0f * 2.0f);
 	m_game->getWindow().draw(help);
 }
@@ -74,17 +74,16 @@ void Scene_Menu::init()
 	registerAction(sf::Keyboard::Escape, "QUIT");
 
 	m_menuTitle = "MENU";
-	auto titleSize{ 30 };
+	constexpr auto titleSize{ 30 };
 
 	m_menuText.setString(m_menuTitle);
 	m_menuText.setFont(m_game->getAssets().getFont("Tech"));
 	m_menuText.setCharacterSize(titleSize);
 	m_menuText.setFillColor(sf::Color::Black);
-	m_menuText.setPosition(m_game->getWindow().getSize().x / 2.0f - titleSize * (m_menuTitle.length() + 1) / 2.0f, titleSize * 3);
+	m_menuText.setPosition(m_game->getWindow().getSize().x / 2.0f - titleSize * (m_menuTitle.length() + 1) / 2.0f, titleSize * 2);
 
 	m_menuStrings.emplace_back("Level 1");
 	m_menuStrings.emplace_back("Level 2");
-	m_menuStrings.emplace_back("Level 3");
 
 	for (auto i = 0; i < m_menuStrings.size(); i++)
 	{
@@ -97,7 +96,6 @@ void Scene_Menu::init()
 
 	m_levelPaths.emplace_back("level1.txt");
 	m_levelPaths.emplace_back("level2.txt");
-	m_levelPaths.emplace_back("level3.txt");
 
 	m_menuText.setFont(m_game->getAssets().getFont("Tech"));
 	m_menuText.setCharacterSize(64);
@@ -108,7 +106,7 @@ void Scene_Menu::onEnd()
 	m_game->quit();
 }
 
-sf::Vector2f Scene_Menu::round(const sf::Vector2f vector)
+sf::Vector2f Scene_Menu::round(sf::Vector2f const vector)
 {
 	return sf::Vector2f{ std::round(vector.x), std::round(vector.y) };
 }

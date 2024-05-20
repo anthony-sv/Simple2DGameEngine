@@ -50,7 +50,7 @@ namespace SGE2D::Components
 		bool down {false};
 		bool left {false};
 		bool right {false};
-		bool shoot {false};
+		bool canJump{ true };
 		[[nodiscard]] CInput() = default;
 	};
 
@@ -81,6 +81,8 @@ namespace SGE2D::Components
 		explicit [[nodiscard]] CState(std::string const& state)
 			: state{ state } {}
 		std::string state {"NONE"};
+		std::string previousState{ "NONE" };
+		bool changeAnimation{ false };
 	};
 
 	struct [[nodiscard]] CGravity final : IComponent

@@ -1,10 +1,9 @@
 #pragma once
 #include "Scene.hpp"
 
-struct [[nodiscard]] PlayerConfig2 final
+struct [[nodiscard]] PlayerConfig final
 {
 	float X, Y, CX, CY, SPEED, MAX_SPEED, JUMP, GRAVITY;
-	std::string WEAPON;
 };
 
 class Scene_Play : public SGE2D::Scenes::Scene
@@ -14,22 +13,18 @@ public:
 	void update() override;
 	// Systems
 	void sRender() override;
-	void sAnimation();
-	void sMovement();
-	void sLifeSpan();
-	//void sEnemySpawner();
-	void sCollision();
+	void sAnimation() const;
+	void sMovement() const;
+	void sCollision() const;
 	void sDoAction(SGE2D::Actions const& action) override;
-	void sDebug();
 	void onEnd() override;
 	void loadLevel(std::string const& path);
-	SGE2D::Math::Vector2D gridToMidPixel(float gridX, float gridY, std::shared_ptr<SGE2D::Entts::Entity> entity);
+	SGE2D::Math::Vector2D gridToMidPixel(float gridX, float gridY, std::shared_ptr<SGE2D::Entts::Entity> const& entity) const;
 	void spawnPlayer();
-	void spawnBullet();
 protected:
 	std::shared_ptr<SGE2D::Entts::Entity> m_player;
 	std::string m_levelPath;
-	PlayerConfig2 m_playerConfig;
+	PlayerConfig m_playerConfig;
 	bool m_drawTextures{ true };
 	bool m_drawCollision{ false };
 	bool m_drawGrid{ false };
@@ -38,4 +33,3 @@ protected:
 
 	void init(std::string const& levelPath);
 };
-

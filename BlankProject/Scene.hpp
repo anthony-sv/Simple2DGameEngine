@@ -17,7 +17,7 @@ namespace SGE2D::Scenes
 		[[nodiscard]] explicit Scene(GameEngine* gameEngine);
 		//virtual ~Scene();
 
-		void simulate(std::size_t const& frames);
+		void simulate(std::size_t const& timesUpdate);
 		virtual void doAction(Actions const& action);
 		void registerAction(int inputKey, std::string const& name);
 		std::unordered_map<int, std::string> const& getActionMap() const;
@@ -38,4 +38,3 @@ namespace SGE2D::Scenes
 		void setPaused(bool const paused);
 	};
 }
-

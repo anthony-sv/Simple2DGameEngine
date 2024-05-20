@@ -54,46 +54,38 @@ SGE2D::Animation::Animation const& SGE2D::Assets::getAnimation(std::string const
 
 void SGE2D::Assets::loadFromFile(std::string const& path)
 {
-	std::ifstream ifs(path);
-	std::string line;
-	while (std::getline(ifs, line))
+	std::ifstream file(path);
+	if (!file) {
+		std::println(std::cerr, "Could not load {} file!", path);
+		std::quick_exit(-1);
+	}
+
+	std::string assetType;
+	while (file >> assetType)
 	{
-		std::istringstream iss(line);
-		std::string first;
-		if (iss >> first)
+		std::string name;
+		std::string assetPath;
+		if (assetType == "Texture")
 		{
-			std::string name, path;
-			if (first == "Font")
-			{
-				iss >> name >> path;
-				sf::Font font;
-				if (!font.loadFromFile(path))
-				{
-					// Print an error message to the console if the font failed to load
-					std::println(std::cerr, "Error loading font");
-					std::quick_exit(EXIT_FAILURE);
-				}
-				m_fonts[name] = font;
-			}
-			else if (first == "Texture")
-			{
-				iss >> name >> path;
-				sf::Texture texture;
-				if (!texture.loadFromFile(path))
-				{
-					// Print an error message to the console if the texture failed to load
-					std::println(std::cerr, "Error loading texture");
-					std::quick_exit(EXIT_FAILURE);
-				}
-				std::println("texture {} size is {},{}", name, texture.getSize().x, texture.getSize().y);
-				m_textures[name] = texture;
-			}
-			else if (first == "Animation")
-			{
-				iss >> name >> path; // Name, textName
-				if (m_textures.contains(path))
-					m_animations[name] = { name, m_textures[path] };
-			}
+			file >> name >> assetPath;
+			addTexture(name, assetPath);
+		}
+		else if (assetType == "Animation")
+		{
+			int frames, speed;
+			file >> name >> assetPath >> frames >> speed;
+			sf::Texture const& tex = getTexture(assetPath);
+			addAnimation(name, Animation::Animation{ name, tex, static_cast<std::size_t>(frames), static_cast<std::size_t>(speed) });
+		}
+		else if (assetType == "Font")
+		{
+			file >> name >> assetPath;
+			addFont(name, assetPath);
+		}
+		else
+		{
+			std::println(std::cerr, "Incorrect asset type: {}", assetType);
+			std::quick_exit(-1);
 		}
 	}
 }

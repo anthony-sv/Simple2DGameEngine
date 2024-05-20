@@ -7,7 +7,10 @@ SGE2D::Scenes::Scene::Scene(GameEngine* gameEngine)
 
 void SGE2D::Scenes::Scene::simulate(std::size_t const& timesUpdate)
 {
-	// TODO
+	for (auto i = 0; i < timesUpdate; i++)
+	{
+		update();
+	}
 }
 
 void SGE2D::Scenes::Scene::doAction(Actions const& action)
@@ -15,7 +18,7 @@ void SGE2D::Scenes::Scene::doAction(Actions const& action)
 	sDoAction(action);
 }
 
-void SGE2D::Scenes::Scene::registerAction(int inputKey, std::string const& actionName)
+void SGE2D::Scenes::Scene::registerAction(int const inputKey, std::string const& actionName)
 {
 	m_actions[inputKey] = actionName;
 }
@@ -23,6 +26,11 @@ void SGE2D::Scenes::Scene::registerAction(int inputKey, std::string const& actio
 std::size_t SGE2D::Scenes::Scene::getCurrentFrame() const
 {
 	return m_currentFrame;
+}
+
+bool SGE2D::Scenes::Scene::hasEnded() const
+{
+	return m_hasEnded;
 }
 
 std::size_t SGE2D::Scenes::Scene::width() const

@@ -1,0 +1,9 @@
+Texture TexIdle assets/textures/Idle.png
+Texture TextJump assets/textures/Jump.png
+Texture TexBlock assets/textures/Block.png
+Texture TextCloud assets/textures/Cloud.png
+Animation Stand TexIdle 1 1
+Animation Jump TextJump 1 1
+Animation Block TexBlock 1 1
+Animation Cloud TextCloud 1 1
+Font Tech assets/fonts/tech.ttf

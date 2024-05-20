@@ -34,4 +34,3 @@ private:
 	void init(std::string const& path);
 	std::shared_ptr<SGE2D::Scenes::Scene> currentScene();
 };
-
