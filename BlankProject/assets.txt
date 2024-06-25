@@ -2,8 +2,20 @@ Texture TexIdle assets/textures/Idle.png
 Texture TextJump assets/textures/Jump.png
 Texture TexBlock assets/textures/Block.png
 Texture TextCloud assets/textures/Cloud.png
+Texture TextLucky assets/textures/Nube.png
+Texture TextESCOM assets/textures/ESCOM.png
+Texture TextBrick assets/textures/Brick.png
+Texture TextPlayer assets/textures/Player.png
+Texture TextSheet assets/textures/Sheet.png
+Texture TextMoto assets/textures/Moto.png
 Animation Stand TexIdle 1 1
 Animation Jump TextJump 1 1
 Animation Block TexBlock 1 1
 Animation Cloud TextCloud 1 1
+Animation Lucky TextLucky 1 1
+Animation ESCOM TextESCOM 1 1
+Animation Brick TextBrick 1 1
+Animation PlayerA TextPlayer 1 1
+Animation Moto TextMoto 1 1
+Animation Sheet TextSheet 2 30
 Font Tech assets/fonts/tech.ttf

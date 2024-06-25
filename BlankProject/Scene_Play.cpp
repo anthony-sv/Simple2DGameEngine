@@ -91,7 +91,7 @@ void Scene_Play::loadLevel(std::string const& path)
 void Scene_Play::spawnPlayer()
 {
 	m_player = m_entities.addEntity("Player");
-	m_player->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("Stand"), true);
+	m_player->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation("PlayerA"), true);
 	m_player->cTransform = std::make_unique<SGE2D::Components::CTransform>(gridToMidPixel(m_playerConfig.X, m_playerConfig.Y, m_player));
 	m_player->cBoundingBox = std::make_unique<SGE2D::Components::CBoundingBoxCollision>(SGE2D::Math::Vector2D{ m_playerConfig.CX, m_playerConfig.CY });
 	m_player->cInput = std::make_unique<SGE2D::Components::CInput>();
@@ -348,7 +348,7 @@ void Scene_Play::sAnimation() const
 		std::string animationName;
 		if (m_player->cState->state == "Idle")
 		{
-			animationName = "Stand";
+			animationName = "PlayerA";
 		}
 		else if (m_player->cState->state == "Jumping")
 		{
@@ -356,7 +356,7 @@ void Scene_Play::sAnimation() const
 		}
 		else if (m_player->cState->state == "Running")
 		{
-			animationName = "Stand";
+			animationName = "PlayerA";
 		}
 		m_player->cAnimation = std::make_unique<SGE2D::Components::CAnimation>(m_game->getAssets().getAnimation(animationName), true);
 	}
@@ -382,7 +382,7 @@ void Scene_Play::sRender()
 	if (!m_paused)
 		m_game->getWindow().clear(sf::Color(100, 100, 255));
 	else
-		m_game->getWindow().clear(sf::Color(50, 50, 150));
+		m_game->getWindow().clear(sf::Color(0, 255, 0));
 
 	auto& playerPosition = m_player->cTransform->position;
 	float windowCenterX = std::max(m_game->getWindow().getSize().x / 2.0f, playerPosition.x);

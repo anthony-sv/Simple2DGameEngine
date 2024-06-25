@@ -58,6 +58,12 @@ void GameEngine::sUserInput()
 		{
 			quit();
 		}
+		// catch the resize events
+		if (event.type == sf::Event::Resized)
+		{
+			sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+			m_window.setView(sf::View(visibleArea));
+		}
 		if (event.type == sf::Event::KeyPressed)
 		{
 			if (event.key.code == sf::Keyboard::X)
@@ -99,6 +105,7 @@ void GameEngine::init(std::string const& path)
 {
 	m_assets.loadFromFile(path);
 	m_window.create(sf::VideoMode(1280, 768), "Game Test 1");
+	m_window.setVerticalSyncEnabled(true);
 	m_window.setFramerateLimit(60);
 	changeScene("MENU", std::make_shared<Scene_Menu>(this));
 }

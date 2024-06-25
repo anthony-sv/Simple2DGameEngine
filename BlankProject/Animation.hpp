@@ -13,7 +13,6 @@ namespace SGE2D::Animation
 		std::string const& getName() const;
 		Math::Vector2D const& getSize() const;
 		sf::Sprite& getSprite();
-		// default contructor
 		[[nodiscard]] Animation() = default;
 		[[nodiscard]] Animation(std::string const& name, sf::Texture const& texture);
 		[[nodiscard]] Animation(std::string const& name, sf::Texture const& texture, std::size_t frameCount, std::size_t speed);
