@@ -3,7 +3,7 @@
 #include <format>
 #include <limits>
 
-namespace SGE2D::Math
+namespace MVS2D::Matematicas
 {
 	Vector2D::Vector2D() : Vector2D{ 0.0f,0.0f } {}
 
@@ -67,24 +67,24 @@ namespace SGE2D::Math
 		y /= s;
 	}
 
-	float Vector2D::length() const
+	float Vector2D::longitud() const
 	{
 		return std::sqrt(x * x + y * y);
 	}
 
-	float Vector2D::distance(Vector2D const& other) const
+	float Vector2D::distancia(Vector2D const& other) const
 	{
-		return (other - *this).length();
+		return (other - *this).longitud();
 	}
 
-	Vector2D Vector2D::normalize() const
+	Vector2D Vector2D::normalizar() const
 	{
-		float const len = length();
+		float const len = longitud();
 		return { x / len, y / len };
 	}
 }
 
-std::ostream& SGE2D::Math::operator<<(std::ostream& os, Vector2D const& vec)
+std::ostream& MVS2D::Matematicas::operator<<(std::ostream& os, Vector2D const& vec)
 {
 	os << "Vector2D(" << vec.x << ", " << vec.y << ")";
 	return os;

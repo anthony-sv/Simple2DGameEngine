@@ -3,7 +3,7 @@
 #include <format>
 #include <string>
 
-namespace SGE2D::Math
+namespace MVS2D::Matematicas
 {
 	struct [[nodiscard]] Vector2D final
 	{
@@ -20,16 +20,16 @@ namespace SGE2D::Math
 		void operator -=(Vector2D const& other);
 		void operator *=(float const s);
 		void operator /=(float const s);
-		[[nodiscard]] float length() const;
-		[[nodiscard]] float distance(Vector2D const& other) const;
-		[[nodiscard]] Vector2D normalize() const;
+		[[nodiscard]] float longitud() const;
+		[[nodiscard]] float distancia(Vector2D const& other) const;
+		[[nodiscard]] Vector2D normalizar() const;
 		friend std::ostream& operator<<(std::ostream& os, Vector2D const& vec);
 	};
 }
 
 template <>
-struct std::formatter<SGE2D::Math::Vector2D> : std::formatter<std::string> {
-	auto format(SGE2D::Math::Vector2D const& v, std::format_context& ctx) const {
+struct std::formatter<MVS2D::Matematicas::Vector2D> : std::formatter<std::string> {
+	auto format(MVS2D::Matematicas::Vector2D const& v, std::format_context& ctx) const {
 		return std::formatter<std::string>::format(std::format("Vector2D={{X={}, Y={}}}", v.x, v.y), ctx);
 	}
 };

@@ -164,36 +164,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Actions.cpp" />
-    <ClCompile Include="Animation.cpp" />
-    <ClCompile Include="Assets.cpp" />
-    <ClCompile Include="BoundingBox.cpp" />
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="EntityManager.cpp" />
-    <ClCompile Include="GameEngine.cpp" />
+    <ClCompile Include="Accion.cpp" />
+    <ClCompile Include="AnimacionSprite.cpp" />
+    <ClCompile Include="ManejadorActivos.cpp" />
+    <ClCompile Include="CajaDelimitadora.cpp" />
+    <ClCompile Include="Entidad.cpp" />
+    <ClCompile Include="ManejadorEntidades.cpp" />
+    <ClCompile Include="MotorVideojuegos.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Scene_Menu.cpp" />
-    <ClCompile Include="Scene_Play.cpp" />
+    <ClCompile Include="Escena.cpp" />
+    <ClCompile Include="SMenu.cpp" />
+    <ClCompile Include="SJugar.cpp" />
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Actions.hpp" />
-    <ClInclude Include="Animation.hpp" />
-    <ClInclude Include="Assets.hpp" />
-    <ClInclude Include="BoundingBox.hpp" />
-    <ClInclude Include="Components.hpp" />
-    <ClInclude Include="Entity.hpp" />
-    <ClInclude Include="EntityManager.hpp" />
-    <ClInclude Include="GameEngine.hpp" />
-    <ClInclude Include="Scene.hpp" />
-    <ClInclude Include="Scene_Menu.hpp" />
-    <ClInclude Include="Scene_Play.hpp" />
+    <ClInclude Include="Accion.hpp" />
+    <ClInclude Include="AnimacionSprite.hpp" />
+    <ClInclude Include="ManejadorActivos.hpp" />
+    <ClInclude Include="CajaDelimitadora.hpp" />
+    <ClInclude Include="Componentes.hpp" />
+    <ClInclude Include="Entidad.hpp" />
+    <ClInclude Include="ManejadorEntidades.hpp" />
+    <ClInclude Include="MotorVideojuegos.hpp" />
+    <ClInclude Include="Escena.hpp" />
+    <ClInclude Include="SMenu.hpp" />
+    <ClInclude Include="SJugar.hpp" />
     <ClInclude Include="Vector2D.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="assets.txt" />
-    <Text Include="level1.txt" />
+    <Text Include="activos.txt" />
+    <Text Include="nivel1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
