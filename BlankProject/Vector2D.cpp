@@ -5,87 +5,119 @@
 
 namespace MVS2D::Matematicas
 {
-	Vector2D::Vector2D() : Vector2D{ 0.0f,0.0f } {}
-
-	Vector2D::Vector2D(float const x, float const y)
-		: x{ x }, y{ y }
+	Vector2D::Vector2D()
+		: Vector2D{ 0.0f,0.0f }
 	{}
 
-	bool Vector2D::operator ==(Vector2D const& other) const
+	Vector2D::Vector2D(
+		float const x,
+		float const y)
+		: x{ x },
+		y{ y }
+	{}
+
+	bool
+		Vector2D::operator ==(
+			Vector2D const& otro) const
 	{
 		constexpr float epsilon = std::numeric_limits<float>::epsilon();
-		return std::abs(x - other.x) <= epsilon * std::abs(x + other.x) &&
-			std::abs(y - other.y) <= epsilon * std::abs(y + other.y);
+		return std::abs(x - otro.x) <= epsilon * std::abs(x + otro.x) &&
+			std::abs(y - otro.y) <= epsilon * std::abs(y + otro.y);
 	}
 
-	bool Vector2D::operator !=(Vector2D const& other) const
+	bool
+		Vector2D::operator !=(
+			Vector2D const& otro) const
 	{
-		return !(*this == other);
+		return !(*this == otro);
 	}
 
-	Vector2D Vector2D::operator +(Vector2D const& other) const
+	Vector2D
+		Vector2D::operator +(
+			Vector2D const& otro) const
 	{
-		return { x + other.x, y + other.y };
+		return { x + otro.x, y + otro.y };
 	}
 
-	Vector2D Vector2D::operator -(Vector2D const& other) const
+	Vector2D
+		Vector2D::operator -(
+			Vector2D const& otro) const
 	{
-		return { x - other.x, y - other.y };
+		return { x - otro.x, y - otro.y };
 	}
 
-	Vector2D Vector2D::operator *(float const s) const
+	Vector2D
+		Vector2D::operator *(
+			float const escalar) const
 	{
-		return { x * s, y * s };
+		return { x * escalar, y * escalar };
 	}
 
-	Vector2D Vector2D::operator /(float const s) const
+	Vector2D
+		Vector2D::operator /(
+			float const escalar) const
 	{
-		return { x / s, y / s };
+		return { x / escalar, y / escalar };
 	}
 
-	void Vector2D::operator+=(Vector2D const& other)
+	void
+		Vector2D::operator+=(
+			Vector2D const& otro)
 	{
-		x += other.x;
-		y += other.y;
+		x += otro.x;
+		y += otro.y;
 	}
 
-	void Vector2D::operator-=(Vector2D const& other)
+	void
+		Vector2D::operator-=(
+			Vector2D const& otro)
 	{
-		x -= other.x;
-		y -= other.y;
+		x -= otro.x;
+		y -= otro.y;
 	}
 
-	void Vector2D::operator*=(float const s)
+	void
+		Vector2D::operator*=(
+			float const escalar)
 	{
-		x *= s;
-		y *= s;
+		x *= escalar;
+		y *= escalar;
 	}
 
-	void Vector2D::operator/=(float const s)
+	void
+		Vector2D::operator/=(
+			float const escalar)
 	{
-		x /= s;
-		y /= s;
+		x /= escalar;
+		y /= escalar;
 	}
 
-	float Vector2D::longitud() const
+	float
+		Vector2D::longitud() const
 	{
 		return std::sqrt(x * x + y * y);
 	}
 
-	float Vector2D::distancia(Vector2D const& other) const
+	float
+		Vector2D::distancia(
+			Vector2D const& otro) const
 	{
-		return (other - *this).longitud();
+		return (otro - *this).longitud();
 	}
 
-	Vector2D Vector2D::normalizar() const
+	Vector2D
+		Vector2D::normalizar() const
 	{
-		float const len = longitud();
-		return { x / len, y / len };
+		float const longitud = this->longitud();
+		return { x / longitud, y / longitud };
 	}
 }
 
-std::ostream& MVS2D::Matematicas::operator<<(std::ostream& os, Vector2D const& vec)
+std::ostream&
+MVS2D::Matematicas::operator<<(
+	std::ostream& flujoSalida,
+	Vector2D const& vector)
 {
-	os << "Vector2D(" << vec.x << ", " << vec.y << ")";
-	return os;
+	flujoSalida << "Vector2D(" << vector.x << ", " << vector.y << ")";
+	return flujoSalida;
 }

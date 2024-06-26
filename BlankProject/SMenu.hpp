@@ -18,7 +18,7 @@ protected:
 	sf::Text m_textoMenu;
 	std::vector <std::string> m_rutasNiveles;
 	std::vector <sf::Text> m_itemsMenu;
-	std::size_t m_indexMenu{ 0 };
+	std::size_t m_indiceMenu{ 0 };
 	void alInicializar();
 	void actualizar() override;
 	void alFinalizar() override;

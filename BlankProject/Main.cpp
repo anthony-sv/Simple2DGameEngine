@@ -4,7 +4,8 @@
 
 #include "MotorVideojuegos.hpp"
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
 	BOOST_LOG_TRIVIAL(debug) << "Leyendo activos.txt";
 	MotorVideojuegos juego{ "activos.txt" };

@@ -3,7 +3,8 @@
 #include "Accion.hpp"
 #include "SMenu.hpp"
 
-void MotorVideojuegos::correr()
+void
+MotorVideojuegos::correr()
 {
 	while (estaCorriendo())
 	{
@@ -11,7 +12,8 @@ void MotorVideojuegos::correr()
 	}
 }
 
-void MotorVideojuegos::actualizar()
+void
+MotorVideojuegos::actualizar()
 {
 	sEntradaUsuario();
 	if (obtenerEscenaActual())
@@ -21,12 +23,17 @@ void MotorVideojuegos::actualizar()
 	m_ventana.display();
 }
 
-void MotorVideojuegos::salir()
+void
+MotorVideojuegos::salir()
 {
 	m_corriendo = false;
 }
 
-void MotorVideojuegos::cambiarEscena(std::string const& nombre, std::shared_ptr<MVS2D::Escenas::Escena> escena, bool terminarEscenaActual)
+void
+MotorVideojuegos::cambiarEscena(
+	std::string const& nombre,
+	std::shared_ptr<MVS2D::Escenas::Escena> escena,
+	bool terminarEscenaActual)
 {
 	if (escena)
 	{
@@ -35,82 +42,88 @@ void MotorVideojuegos::cambiarEscena(std::string const& nombre, std::shared_ptr<
 	}
 	if (!m_escenas.contains(nombre))
 	{
-		m_escenaActual = "NONE";
+		m_escenaActual = "N/A";
 	}
 }
 
-MVS2D::Activos::ManejadorActivos const& MotorVideojuegos::obtenerActivos() const
+MVS2D::Activos::ManejadorActivos const&
+MotorVideojuegos::obtenerActivos() const
 {
 	return m_activos;
 }
 
-sf::RenderWindow& MotorVideojuegos::obtenerVentana()
+sf::RenderWindow&
+MotorVideojuegos::obtenerVentana()
 {
 	return m_ventana;
 }
 
-void MotorVideojuegos::sEntradaUsuario()
+void
+MotorVideojuegos::sEntradaUsuario()
 {
-	sf::Event event;
-	while (m_ventana.pollEvent(event))
+	sf::Event evento;
+	while (m_ventana.pollEvent(evento))
 	{
-		if (event.type == sf::Event::Closed)
+		if (evento.type == sf::Event::Closed)
 		{
 			salir();
 		}
-		// catch the resize events
-		if (event.type == sf::Event::Resized)
+		if (evento.type == sf::Event::Resized)
 		{
-			sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-			m_ventana.setView(sf::View(visibleArea));
+			sf::FloatRect areaVisible(0, 0, evento.size.width, evento.size.height);
+			m_ventana.setView(sf::View(areaVisible));
 		}
-		if (event.type == sf::Event::KeyPressed)
+		if (evento.type == sf::Event::KeyPressed)
 		{
-			if (event.key.code == sf::Keyboard::X)
+			if (evento.key.code == sf::Keyboard::X)
 			{
-				std::println("Saving screenshot...");
-				sf::Texture texture;
-				texture.create(m_ventana.getSize().x, m_ventana.getSize().y);
-				texture.update(m_ventana);
-				if (texture.copyToImage().saveToFile("test.png"))
+				std::println("Guardando captura de pantalla...");
+				sf::Texture textura;
+				textura.create(m_ventana.getSize().x, m_ventana.getSize().y);
+				textura.update(m_ventana);
+				if (textura.copyToImage().saveToFile("screenshot.png"))
 				{
-					std::println("Screenshot saved to test.png");
+					std::println("Captura de pantalla guardada en screenshot.png");
 				}
 			}
 		}
-		if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased)
+		if (evento.type == sf::Event::KeyPressed || evento.type == sf::Event::KeyReleased)
 		{
-			if (!obtenerEscenaActual()->obtenerMapaAcciones().contains(event.key.code))
+			if (!obtenerEscenaActual()->obtenerMapaAcciones().contains(evento.key.code))
 			{
 				continue;
 			}
-			std::println("Key pressed: {}", static_cast<int>(event.key.code));
-			std::string const actionType{ (event.type == sf::Event::KeyPressed) ? "START" : "END" };
-			obtenerEscenaActual()->realizarAccion({ obtenerEscenaActual()->obtenerMapaAcciones().at(event.key.code), actionType });
+			std::string const tipoAccion{ (evento.type == sf::Event::KeyPressed) ? "INICIO" : "FIN" };
+			obtenerEscenaActual()->realizarAccion({ obtenerEscenaActual()->obtenerMapaAcciones().at(evento.key.code), tipoAccion });
 		}
 	}
 }
 
-bool MotorVideojuegos::estaCorriendo() const
+bool
+MotorVideojuegos::estaCorriendo() const
 {
 	return m_corriendo && m_ventana.isOpen();
 }
 
-MotorVideojuegos::MotorVideojuegos(std::string const& ruta)
+MotorVideojuegos::MotorVideojuegos(
+	std::string const& ruta)
 {
 	alInicializar(ruta);
 }
 
-void MotorVideojuegos::alInicializar(std::string const& ruta)
+void
+MotorVideojuegos::alInicializar(
+	std::string const& ruta)
 {
 	m_activos.cargarDesdeArchivo(ruta);
-	m_ventana.create(sf::VideoMode(1280, 768), "Game Test 1");
+	m_ventana.create(sf::VideoMode(1280, 768), "Sandbox TT");
 	m_ventana.setVerticalSyncEnabled(true);
 	m_ventana.setFramerateLimit(60);
 	cambiarEscena("MENU", std::make_shared<SMenu>(this));
 }
 
-std::shared_ptr<MVS2D::Escenas::Escena> MotorVideojuegos::obtenerEscenaActual()
+std::shared_ptr<MVS2D::Escenas::Escena>
+MotorVideojuegos::obtenerEscenaActual()
 {
 	return m_escenas.at(m_escenaActual);
 }

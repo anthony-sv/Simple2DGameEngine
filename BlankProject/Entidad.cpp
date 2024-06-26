@@ -2,26 +2,33 @@
 
 namespace MVS2D::Entidades
 {
-	Entidad::Entidad(std::size_t const& identificador, std::string const& etiqueta)
-		: m_identificador{ identificador }, m_etiqueta{ etiqueta }
+	Entidad::Entidad(
+		std::size_t const& identificador,
+		std::string const& etiqueta)
+		: m_identificador{ identificador },
+		m_etiqueta{ etiqueta }
 	{}
 
-	void Entidad::destruir()
+	void
+		Entidad::destruir()
 	{
 		m_activa = false;
 	}
 
-	std::size_t Entidad::obtenerIdentificador() const
+	std::size_t
+		Entidad::obtenerIdentificador() const
 	{
 		return m_identificador;
 	}
 
-	bool Entidad::estaActiva() const
+	bool
+		Entidad::estaActiva() const
 	{
 		return m_activa;
 	}
 
-	std::string const& Entidad::obtenerEtiqueta() const
+	std::string const&
+		Entidad::obtenerEtiqueta() const
 	{
 		return m_etiqueta;
 	}

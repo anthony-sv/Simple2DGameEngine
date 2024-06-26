@@ -10,20 +10,20 @@ namespace MVS2D::Matematicas
 		[[nodiscard]] Vector2D();
 		[[nodiscard]] Vector2D(float x, float y);
 		float x{}, y{};
-		bool operator ==(Vector2D const& other) const;
-		bool operator !=(Vector2D const& other) const;
-		[[nodiscard]] Vector2D operator +(Vector2D const& other) const;
-		[[nodiscard]] Vector2D operator -(Vector2D const& other) const;
-		[[nodiscard]] Vector2D operator *(float s) const;
-		[[nodiscard]] Vector2D operator /(float s) const;
-		void operator +=(Vector2D const& other);
-		void operator -=(Vector2D const& other);
-		void operator *=(float const s);
-		void operator /=(float const s);
+		bool operator ==(Vector2D const& otro) const;
+		bool operator !=(Vector2D const& otro) const;
+		[[nodiscard]] Vector2D operator +(Vector2D const& otro) const;
+		[[nodiscard]] Vector2D operator -(Vector2D const& otro) const;
+		[[nodiscard]] Vector2D operator *(float escalar) const;
+		[[nodiscard]] Vector2D operator /(float escalar) const;
+		void operator +=(Vector2D const& otro);
+		void operator -=(Vector2D const& otro);
+		void operator *=(float const escalar);
+		void operator /=(float const escalar);
 		[[nodiscard]] float longitud() const;
-		[[nodiscard]] float distancia(Vector2D const& other) const;
+		[[nodiscard]] float distancia(Vector2D const& otro) const;
 		[[nodiscard]] Vector2D normalizar() const;
-		friend std::ostream& operator<<(std::ostream& os, Vector2D const& vec);
+		friend std::ostream& operator<<(std::ostream& flujoSalida, Vector2D const& vector);
 	};
 }
 

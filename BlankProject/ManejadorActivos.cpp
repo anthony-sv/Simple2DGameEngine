@@ -7,76 +7,95 @@
 
 using namespace MVS2D::Sistemas;
 
-void MVS2D::Activos::ManejadorActivos::agregarTextura(std::string const& nombre, std::string const& ruta)
+void
+MVS2D::Activos::ManejadorActivos::agregarTextura(
+	std::string const& nombre,
+	std::string const& ruta)
 {
-	sf::Texture texture;
-	texture.loadFromFile(ruta);
-	m_texturas[nombre] = texture;
+	sf::Texture textura;
+	textura.loadFromFile(ruta);
+	m_texturas[nombre] = textura;
 }
 
-void MVS2D::Activos::ManejadorActivos::agregarFuente(std::string const& nombre, std::string const& ruta)
+void
+MVS2D::Activos::ManejadorActivos::agregarFuente(
+	std::string const& nombre,
+	std::string const& ruta)
 {
 	m_fuentes[nombre] = sf::Font();
 	if (!m_fuentes[nombre].loadFromFile(ruta))
 	{
-		std::println(std::cerr, "Could not load Font from {}", ruta);
+		std::println(std::cerr, "No se ha podido cargar la fuente de la ruta: {}", ruta);
 	}
 }
 
-void MVS2D::Activos::ManejadorActivos::agregarAnimacion(std::string const& nombre, Animaciones::AnimacionSprite const& ruta)
+void
+MVS2D::Activos::ManejadorActivos::agregarAnimacion(
+	std::string const& nombre,
+	Animaciones::AnimacionSprite const& ruta)
 {
 	m_animaciones[nombre] = ruta;
 }
 
-sf::Texture const& MVS2D::Activos::ManejadorActivos::obtenerTextura(std::string const& nombre) const
+sf::Texture const&
+MVS2D::Activos::ManejadorActivos::obtenerTextura(
+	std::string const& nombre) const
 {
 	return m_texturas.at(nombre);
 }
 
-sf::Font const& MVS2D::Activos::ManejadorActivos::obtenerFuente(std::string const& nombre) const
+sf::Font const&
+MVS2D::Activos::ManejadorActivos::obtenerFuente(
+	std::string const& nombre) const
 {
 	return m_fuentes.at(nombre);
 
 }
 
-Animaciones::AnimacionSprite const& MVS2D::Activos::ManejadorActivos::obtenerAnimacion(std::string const& nombre) const
+Animaciones::AnimacionSprite const&
+MVS2D::Activos::ManejadorActivos::obtenerAnimacion(
+	std::string const& nombre) const
 {
 	return m_animaciones.at(nombre);
 }
 
-void MVS2D::Activos::ManejadorActivos::cargarDesdeArchivo(std::string const& ruta)
+void
+MVS2D::Activos::ManejadorActivos::cargarDesdeArchivo(
+	std::string const& ruta)
 {
-	std::ifstream file(ruta);
-	if (!file) {
-		std::println(std::cerr, "Could not load {} file!", ruta);
+	std::ifstream archivoActivos{ ruta };
+	if (!archivoActivos) {
+		std::println(std::cerr, "No se puede cargar el archivo: {}", ruta);
 		std::quick_exit(-1);
 	}
 
-	std::string assetType;
-	while (file >> assetType)
+	std::string tipoActivo;
+	while (archivoActivos >> tipoActivo)
 	{
-		std::string name;
-		std::string assetPath;
-		if (assetType == "Texture")
+		std::string nombre;
+		std::string rutaActivo;
+		if (tipoActivo == "Textura")
 		{
-			file >> name >> assetPath;
-			agregarTextura(name, assetPath);
+			archivoActivos >> nombre >> rutaActivo;
+			agregarTextura(nombre, rutaActivo);
 		}
-		else if (assetType == "Animation")
+		else if (tipoActivo == "Animacion")
 		{
 			int frames, speed;
-			file >> name >> assetPath >> frames >> speed;
-			sf::Texture const& tex = obtenerTextura(assetPath);
-			agregarAnimacion(name, Animaciones::AnimacionSprite{ name, tex, static_cast<std::size_t>(frames), static_cast<std::size_t>(speed) });
+			archivoActivos >> nombre >> rutaActivo >> frames >> speed;
+			sf::Texture const& tex = obtenerTextura(rutaActivo);
+			agregarAnimacion(
+				nombre,
+				Animaciones::AnimacionSprite{ nombre, tex, static_cast<std::size_t>(frames), static_cast<std::size_t>(speed) });
 		}
-		else if (assetType == "Font")
+		else if (tipoActivo == "Fuente")
 		{
-			file >> name >> assetPath;
-			agregarFuente(name, assetPath);
+			archivoActivos >> nombre >> rutaActivo;
+			agregarFuente(nombre, rutaActivo);
 		}
 		else
 		{
-			std::println(std::cerr, "Incorrect asset type: {}", assetType);
+			std::println(std::cerr, "Tipo de activo incorrecto: {}", tipoActivo);
 			std::quick_exit(-1);
 		}
 	}
