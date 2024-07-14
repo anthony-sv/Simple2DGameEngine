@@ -7,6 +7,8 @@
 #include "CajaDelimitadora.hpp"
 #include "SMenu.hpp"
 
+#include "boost/log/trivial.hpp"
+
 SJugar::SJugar(
 	MotorVideojuegos* motorVideojuegos,
 	std::string const& rutaNivelInicial)
@@ -209,7 +211,7 @@ SJugar::sColision() const
 				m_jugador->cMovimiento->posicion.y += superposicion.y;
 				m_jugador->cMovimiento->velocidad.y = 0;
 				if (mosaico->cAnimacion->animacion.obtenerNombre() == "Block") {
-					std::println("Se golpea por debajo un Bloque!");
+					BOOST_LOG_TRIVIAL(debug) << "Se golpea por debajo un Bloque!";
 				}
 			}
 		}
